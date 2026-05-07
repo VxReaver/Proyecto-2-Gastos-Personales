@@ -1,6 +1,7 @@
 package com.example.gastospersonales
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Button
@@ -23,9 +24,8 @@ class MainActivity : AppCompatActivity() {
 
         if (estaLogueado) {
             // Si ya inició sesión, se saltaría a la pantalla principal
-            // Por ahora solo mostramos un mensaje, ya que no existe la siguiente pantalla.
-            Toast.makeText(this, "Bienvenido de nuevo", Toast.LENGTH_SHORT).show()
-            // irAPantallaPrincipal()
+            Toast.makeText(this, "Sesión activa encontrada", Toast.LENGTH_SHORT).show()
+            // En el futuro: irAPantallaPrincipal()
             // finish()
         }
 
@@ -52,25 +52,23 @@ class MainActivity : AppCompatActivity() {
             val password = etPassword.text.toString().trim()
 
             if (validarDatos(email, password, tilEmail, tilPassword)) {
-                // Aquí se validaría contra la base de datos local en el futuro
+                // Simulación de login exitoso
                 guardarSesion()
-                Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                // Navegar a la pantalla principal (cuando esté creada)
+                Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
+                // Navegar a la pantalla principal
             }
         }
 
         // Botón para crear cuenta (Pantalla #2)
         btnCreateAccount.setOnClickListener {
-            Toast.makeText(this, "Redirigiendo a registro...", Toast.LENGTH_SHORT).show()
-            // val intent = Intent(this, RegistroActivity::class.java)
-            // startActivity(intent)
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 
     private fun validarDatos(email: String, pass: String, tilEmail: TextInputLayout, tilPass: TextInputLayout): Boolean {
         var esValido = true
 
-        // Validación de correo electrónico
         if (email.isEmpty()) {
             tilEmail.error = "El correo es obligatorio"
             esValido = false
@@ -81,7 +79,6 @@ class MainActivity : AppCompatActivity() {
             tilEmail.error = null
         }
 
-        // Validación de contraseña
         if (pass.isEmpty()) {
             tilPass.error = "La contraseña es obligatoria"
             esValido = false
