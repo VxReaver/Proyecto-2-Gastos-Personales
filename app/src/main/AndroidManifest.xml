@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GastosPersonales">
         <activity
+            android:name=".HomeActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GastosPersonales.NoActionBar" />
+        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity

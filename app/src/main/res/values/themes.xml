@@ -2,8 +2,15 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.GastosPersonales" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">#00695C</item>
+        <item name="colorPrimaryVariant">#003d33</item>
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
     <style name="Theme.GastosPersonales" parent="Base.Theme.GastosPersonales" />
+
+    <style name="Theme.GastosPersonales.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

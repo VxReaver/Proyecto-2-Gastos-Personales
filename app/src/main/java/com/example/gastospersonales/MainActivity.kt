@@ -23,10 +23,8 @@ class MainActivity : AppCompatActivity() {
         val estaLogueado = sharedPref.getBoolean("isLoggedIn", false)
 
         if (estaLogueado) {
-            // Si ya inició sesión, se saltaría a la pantalla principal
-            Toast.makeText(this, "Sesión activa encontrada", Toast.LENGTH_SHORT).show()
-            // En el futuro: irAPantallaPrincipal()
-            // finish()
+            irAPantallaPrincipal()
+            return
         }
 
         enableEdgeToEdge()
@@ -55,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 // Simulación de login exitoso
                 guardarSesion()
                 Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-                // Navegar a la pantalla principal
+                irAPantallaPrincipal()
             }
         }
 
@@ -95,5 +93,11 @@ class MainActivity : AppCompatActivity() {
             putBoolean("isLoggedIn", true)
             apply()
         }
+    }
+
+    private fun irAPantallaPrincipal() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
