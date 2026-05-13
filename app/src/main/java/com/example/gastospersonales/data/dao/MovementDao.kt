@@ -15,6 +15,9 @@ interface MovementDao {
     @Query("SELECT * FROM movements ORDER BY fecha DESC")
     fun getAll(): Flow<List<Movement>>
 
+    @Query("SELECT * FROM movements WHERE categoria = :category ORDER BY fecha DESC")
+    fun getByCategory(category: String): Flow<List<Movement>>
+
     @Query("""
         SELECT categoria, SUM(cantidad) as total 
         FROM movements 

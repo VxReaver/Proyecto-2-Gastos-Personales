@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.gastospersonales"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.gastospersonales"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -33,12 +33,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
-    }
-    buildFeatures {
-        viewBinding = true
-    }
-    kotlinOptions {
-        jvmTarget = "11"
     }
     buildFeatures {
         viewBinding = true

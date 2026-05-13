@@ -8,8 +8,10 @@ import com.example.gastospersonales.databinding.ItemCategoryReportBinding
 import java.text.NumberFormat
 import java.util.Locale
 
-class CategoryReportAdapter(private var items: List<CategorySum>) : 
-    RecyclerView.Adapter<CategoryReportAdapter.ViewHolder>() {
+class CategoryReportAdapter(
+    private var items: List<CategorySum>,
+    private val onItemClick: (String) -> Unit // Añadimos el click listener
+) : RecyclerView.Adapter<CategoryReportAdapter.ViewHolder>() {
 
     private val formatter = NumberFormat.getCurrencyInstance(Locale.US)
 
@@ -39,6 +41,9 @@ class CategoryReportAdapter(private var items: List<CategorySum>) :
             val percentage = if (totalGlobal > 0) (item.total / totalGlobal * 100).toInt() else 0
             binding.progressCategory.progress = percentage
             binding.tvPercentage.text = "$percentage%"
+
+            // Al hacer clic, enviamos el nombre de la categoría
+            binding.root.setOnClickListener { onItemClick(item.categoria) }
         }
     }
 }

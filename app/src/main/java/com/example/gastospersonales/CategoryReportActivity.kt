@@ -1,14 +1,12 @@
 package com.example.gastospersonales
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gastospersonales.data.AppDatabase
-import com.example.gastospersonales.data.dao.CategorySum
 import com.example.gastospersonales.databinding.ActivityCategoryReportBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -35,7 +33,12 @@ class CategoryReportActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = CategoryReportAdapter(emptyList())
+        // Al hacer clic en una categoría, abrimos la Pantalla 6 (Detalle)
+        adapter = CategoryReportAdapter(emptyList()) { categoryName ->
+            val intent = Intent(this, CategoryDetailActivity::class.java)
+            intent.putExtra("CATEGORY_NAME", categoryName)
+            startActivity(intent)
+        }
         binding.rvCategoryReport.layoutManager = LinearLayoutManager(this)
         binding.rvCategoryReport.adapter = adapter
     }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/ic_movements"
+        android:title="Ordenar por"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/sort_account"
+                android:title="Por cuenta" />
+            <item
+                android:id="@+id/sort_date"
+                android:title="Por fecha" />
+            <item
+                android:id="@+id/sort_amount"
+                android:title="Por cantidad" />
+        </menu>
+    </item>
+</menu>
