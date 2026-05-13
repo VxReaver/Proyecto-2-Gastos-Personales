@@ -18,11 +18,13 @@ interface MovementDao {
     @Query("""
         SELECT categoria, SUM(cantidad) as total 
         FROM movements 
-        WHERE cuentaOrigen = :cuenta OR cuentaDestino = :cuenta
+        WHERE (cuentaOrigen = :cuenta OR cuentaDestino = :cuenta)
+        AND CAST(strftime('%Y', fecha / 1000, 'unixepoch') AS INTEGER) = :year
+        AND CAST(strftime('%m', fecha / 1000, 'unixepoch') AS INTEGER) = :month
         GROUP BY categoria 
         ORDER BY total DESC
     """)
-    fun getCategoryReport(cuenta: String): Flow<List<CategorySum>>
+    fun getCategoryReport(cuenta: String, year: Int, month: Int): Flow<List<CategorySum>>
 }
 
 data class CategorySum(

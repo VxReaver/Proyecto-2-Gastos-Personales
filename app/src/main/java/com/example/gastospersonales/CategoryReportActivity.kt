@@ -1,0 +1,87 @@
+package com.example.gastospersonales
+
+import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.gastospersonales.data.AppDatabase
+import com.example.gastospersonales.data.dao.CategorySum
+import com.example.gastospersonales.databinding.ActivityCategoryReportBinding
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.util.Calendar
+
+class CategoryReportActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityCategoryReportBinding
+    private lateinit var adapter: CategoryReportAdapter
+    
+    private var currentAccount = "Efectivo"
+    private var currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    private var currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1 // 1-indexed
+    
+    private var observationJob: Job? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityCategoryReportBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupRecyclerView()
+        setupFilters()
+        observeData()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = CategoryReportAdapter(emptyList())
+        binding.rvCategoryReport.layoutManager = LinearLayoutManager(this)
+        binding.rvCategoryReport.adapter = adapter
+    }
+
+    private fun setupFilters() {
+        // Accounts Filter
+        val accounts = arrayOf("Efectivo", "Tarjeta Débito", "Ahorros")
+        val accountAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, accounts)
+        binding.spinnerAccountFilter.setAdapter(accountAdapter)
+        binding.spinnerAccountFilter.setText(currentAccount, false)
+        binding.spinnerAccountFilter.setOnItemClickListener { _, _, position, _ ->
+            currentAccount = accounts[position]
+            observeData()
+        }
+
+        // Year Filter
+        val years = (2020..2030).map { it.toString() }.toTypedArray()
+        val yearAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, years)
+        binding.spinnerYear.setAdapter(yearAdapter)
+        binding.spinnerYear.setText(currentYear.toString(), false)
+        binding.spinnerYear.setOnItemClickListener { _, _, position, _ ->
+            currentYear = years[position].toInt()
+            observeData()
+        }
+
+        // Month Filter
+        val months = arrayOf("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+                             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
+        val monthAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, months)
+        binding.spinnerMonth.setAdapter(monthAdapter)
+        binding.spinnerMonth.setText(months[currentMonth - 1], false)
+        binding.spinnerMonth.setOnItemClickListener { _, _, position, _ ->
+            currentMonth = position + 1
+            observeData()
+        }
+    }
+
+    private fun observeData() {
+        observationJob?.cancel()
+        observationJob = lifecycleScope.launch {
+            AppDatabase.getDatabase(this@CategoryReportActivity)
+                .movementDao()
+                .getCategoryReport(currentAccount, currentYear, currentMonth)
+                .collect { report ->
+                    adapter.updateData(report)
+                }
+        }
+    }
+}
