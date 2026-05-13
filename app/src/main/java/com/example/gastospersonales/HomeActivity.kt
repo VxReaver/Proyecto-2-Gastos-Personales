@@ -47,10 +47,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             cerrarSesion()
         }
 
-        // Configurar el FAB para abrir la pantalla de agregar gasto (Pantalla 4)
+        // El FAB abre la pantalla de Agregar (Pantalla 4)
         val fabAddExpense: FloatingActionButton = findViewById(R.id.fabAddExpense)
         fabAddExpense.setOnClickListener {
-            val intent = Intent(this, AddExpenseActivity::class.java)
+            val intent = Intent(this, AddMovementActivity::class.java)
             startActivity(intent)
         }
 
@@ -64,12 +64,21 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_home -> Toast.makeText(this, "Inicio", Toast.LENGTH_SHORT).show()
+
+            // Ir a Pantalla 7 (Lista de Movimientos)
             R.id.nav_movements -> {
-                val intent = Intent(this, AddExpenseActivity::class.java)
+                val intent = Intent(this, MovementsActivity::class.java)
                 startActivity(intent)
             }
+
             R.id.nav_accounts -> Toast.makeText(this, "Cuentas", Toast.LENGTH_SHORT).show()
-            R.id.nav_categories -> Toast.makeText(this, "Categorías", Toast.LENGTH_SHORT).show()
+
+            // Ir a Pantalla 5 (Reporte por Categorías)
+            R.id.nav_categories -> {
+                val intent = Intent(this, CategoryReportActivity::class.java)
+                startActivity(intent)
+            }
+
             R.id.nav_help -> Toast.makeText(this, "Ayuda", Toast.LENGTH_SHORT).show()
             R.id.nav_about -> Toast.makeText(this, "Acerca de...", Toast.LENGTH_SHORT).show()
         }
