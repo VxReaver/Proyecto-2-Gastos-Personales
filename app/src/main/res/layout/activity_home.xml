@@ -38,8 +38,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Contenido de la pantalla seleccionada" />
+                android:text="Bienvenido a tu control de gastos" />
         </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:contentDescription="Agregar gasto"
+            android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="#00695C"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -52,7 +64,6 @@
         app:headerLayout="@layout/nav_header_home"
         app:menu="@menu/activity_home_drawer"
         app:itemIconTint="#00695C"
-        app:itemTextColor="#212121"
-        app:itemBackground="@drawable/nav_item_background" />
+        app:itemTextColor="#212121" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
