@@ -5,7 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
@@ -40,6 +42,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        // Configurar la información del usuario en la cabecera
+        setupNavigationHeader(navView)
+
+        // Cargar DashboardFragment por defecto
+        if (savedInstanceState == null) {
+            replaceFragment(DashboardFragment())
+            navView.setCheckedItem(R.id.nav_home)
+        }
+
         // Configurar el botón de cerrar sesión en la cabecera
         val headerView = navView.getHeaderView(0)
         val llLogout = headerView.findViewById<View>(R.id.llLogout)
@@ -61,26 +72,53 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    private fun setupNavigationHeader(navView: NavigationView) {
+        val headerView = navView.getHeaderView(0)
+        val tvName = headerView.findViewById<TextView>(R.id.tvHeaderName)
+        val tvEmail = headerView.findViewById<TextView>(R.id.tvHeaderEmail)
+        val ivAvatar = headerView.findViewById<ImageView>(R.id.ivUserAvatar)
+
+        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        val name = sharedPref.getString("user_name", "Usuario")
+        val email = sharedPref.getString("user_email", "correo@ejemplo.com")
+        val avatarId = sharedPref.getInt("user_avatar", 0)
+
+        tvName.text = name
+        tvEmail.text = email
+        
+        // Mapear el ID del avatar al recurso correspondiente
+        // Por ahora todos usan ic_person, pero aquí se cambiaría según el ID
+        ivAvatar.setImageResource(R.drawable.ic_person)
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment_content_home, fragment)
+            .commit()
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_home -> Toast.makeText(this, "Inicio", Toast.LENGTH_SHORT).show()
-
-            // Ir a Pantalla 7 (Lista de Movimientos)
+            R.id.nav_home -> {
+                replaceFragment(DashboardFragment())
+            }
             R.id.nav_movements -> {
                 val intent = Intent(this, MovementsActivity::class.java)
                 startActivity(intent)
             }
-
-            R.id.nav_accounts -> Toast.makeText(this, "Cuentas", Toast.LENGTH_SHORT).show()
-
-            // Ir a Pantalla 5 (Reporte por Categorías)
+            R.id.nav_accounts -> {
+                // Implementar fragmento o actividad de cuentas
+            }
             R.id.nav_categories -> {
                 val intent = Intent(this, CategoryReportActivity::class.java)
                 startActivity(intent)
             }
-
-            R.id.nav_help -> Toast.makeText(this, "Ayuda", Toast.LENGTH_SHORT).show()
-            R.id.nav_about -> Toast.makeText(this, "Acerca de...", Toast.LENGTH_SHORT).show()
+            R.id.nav_help -> {
+                // Implementar Ayuda
+            }
+            R.id.nav_about -> {
+                // Implementar Acerca de
+            }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
@@ -89,7 +127,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun cerrarSesion() {
         val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putBoolean("isLoggedIn", false)
+            clear() // Limpia toda la sesión
             apply()
         }
         val intent = Intent(this, MainActivity::class.java)

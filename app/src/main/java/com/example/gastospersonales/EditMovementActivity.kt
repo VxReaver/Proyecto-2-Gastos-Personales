@@ -11,7 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.gastospersonales.data.AppDatabase
+import com.example.gastospersonales.data.entities.Movement
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -19,11 +23,19 @@ import java.util.Locale
 class EditMovementActivity : AppCompatActivity() {
 
     private val calendar = Calendar.getInstance()
+    private var movementId: Int = -1
+    private lateinit var etAmount: TextInputEditText
+    private lateinit var actvAccount: AutoCompleteTextView
+    private lateinit var actvCategory: AutoCompleteTextView
+    private lateinit var etDescription: TextInputEditText
+    private lateinit var etDate: TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_edit_movement)
+
+        movementId = intent.getIntExtra("MOVEMENT_ID", -1)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -36,34 +48,51 @@ class EditMovementActivity : AppCompatActivity() {
             insets
         }
 
-        // Configurar Spinners (Dropdowns)
-        setupDropdowns()
+        // Inicializar vistas
+        etAmount = findViewById(R.id.etAmount)
+        actvAccount = findViewById(R.id.actvAccount)
+        actvCategory = findViewById(R.id.actvCategory)
+        etDescription = findViewById(R.id.etDescription)
+        etDate = findViewById(R.id.etDate)
 
-        // Configurar DatePicker
+        setupDropdowns()
         setupDatePicker()
 
-        // Botón Guardar
+        if (movementId != -1) {
+            loadMovementData()
+        }
+
         findViewById<Button>(R.id.btnSave).setOnClickListener {
-            Toast.makeText(this, "Cambios guardados", Toast.LENGTH_SHORT).show()
-            finish()
+            saveChanges()
+        }
+    }
+
+    private fun loadMovementData() {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(this@EditMovementActivity)
+            val movement = db.movementDao().getById(movementId)
+            movement?.let {
+                etAmount.setText(it.cantidad.toString())
+                actvAccount.setText(it.cuentaOrigen, false)
+                actvCategory.setText(it.categoria, false)
+                etDescription.setText(it.descripcion)
+                calendar.time = it.fecha
+                updateLabel(etDate)
+            }
         }
     }
 
     private fun setupDropdowns() {
-        // Cuentas de ejemplo
         val accounts = arrayOf("Efectivo", "T. Débito", "T. Crédito", "Ahorros")
         val adapterAccounts = ArrayAdapter(this, android.R.layout.simple_list_item_1, accounts)
-        findViewById<AutoCompleteTextView>(R.id.actvAccount).setAdapter(adapterAccounts)
+        actvAccount.setAdapter(adapterAccounts)
 
-        // Categorías de ejemplo
         val categories = arrayOf("Hogar", "Comida", "Transporte", "Salud", "Entretenimiento")
         val adapterCategories = ArrayAdapter(this, android.R.layout.simple_list_item_1, categories)
-        findViewById<AutoCompleteTextView>(R.id.actvCategory).setAdapter(adapterCategories)
+        actvCategory.setAdapter(adapterCategories)
     }
 
     private fun setupDatePicker() {
-        val etDate = findViewById<TextInputEditText>(R.id.etDate)
-        
         val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
@@ -86,5 +115,35 @@ class EditMovementActivity : AppCompatActivity() {
         val myFormat = "dd MMM yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale("es", "ES"))
         editText.setText(sdf.format(calendar.time))
+    }
+
+    private fun saveChanges() {
+        val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+        val account = actvAccount.text.toString()
+        val category = actvCategory.text.toString()
+        val description = etDescription.text.toString()
+
+        if (amount <= 0) {
+            Toast.makeText(this, "Ingresa una cantidad válida", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(this@EditMovementActivity)
+            val movement = db.movementDao().getById(movementId)
+            
+            if (movement != null) {
+                val updatedMovement = movement.copy(
+                    cantidad = amount,
+                    cuentaOrigen = account,
+                    categoria = category,
+                    descripcion = description,
+                    fecha = calendar.time
+                )
+                db.movementDao().update(updatedMovement)
+                Toast.makeText(this@EditMovementActivity, "Movimiento actualizado", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        }
     }
 }

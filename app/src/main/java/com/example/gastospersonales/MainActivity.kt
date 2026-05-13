@@ -10,8 +10,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.gastospersonales.data.AppDatabase
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,14 +49,22 @@ class MainActivity : AppCompatActivity() {
 
         // Botón para iniciar sesión
         btnLogin.setOnClickListener {
-            val email = etEmail.text.toString().trim()
-            val password = etPassword.text.toString().trim()
+            val emailText = etEmail.text.toString().trim()
+            val passwordText = etPassword.text.toString().trim()
 
-            if (validarDatos(email, password, tilEmail, tilPassword)) {
-                // Simulación de login exitoso
-                guardarSesion()
-                Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-                irAPantallaPrincipal()
+            if (validarDatos(emailText, passwordText, tilEmail, tilPassword)) {
+                lifecycleScope.launch {
+                    val db = AppDatabase.getDatabase(this@MainActivity)
+                    val usuario = db.userDao().login(emailText, passwordText)
+
+                    if (usuario != null) {
+                        guardarSesion(usuario.email, usuario.nombre, usuario.avatarId)
+                        Toast.makeText(this@MainActivity, "¡Bienvenido ${usuario.nombre}!", Toast.LENGTH_SHORT).show()
+                        irAPantallaPrincipal()
+                    } else {
+                        Toast.makeText(this@MainActivity, "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
@@ -87,10 +98,13 @@ class MainActivity : AppCompatActivity() {
         return esValido
     }
 
-    private fun guardarSesion() {
+    private fun guardarSesion(email: String, nombre: String, avatarId: Int) {
         val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putBoolean("isLoggedIn", true)
+            putString("user_email", email)
+            putString("user_name", nombre)
+            putInt("user_avatar", avatarId)
             apply()
         }
     }

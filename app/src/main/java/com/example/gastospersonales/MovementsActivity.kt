@@ -1,5 +1,6 @@
 package com.example.gastospersonales
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -81,7 +82,11 @@ class MovementsActivity : AppCompatActivity() {
             .setTitle("Opciones de movimiento")
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> Toast.makeText(this, "Ir a Pantalla 8 (Modificar)", Toast.LENGTH_SHORT).show()
+                    0 -> {
+                        val intent = Intent(this, EditMovementActivity::class.java)
+                        intent.putExtra("MOVEMENT_ID", movement.id)
+                        startActivity(intent)
+                    }
                     1 -> deleteMovement(movement)
                 }
             }
