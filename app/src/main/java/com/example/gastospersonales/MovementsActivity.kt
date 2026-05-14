@@ -1,5 +1,6 @@
 package com.example.gastospersonales
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -26,12 +27,22 @@ class MovementsActivity : AppCompatActivity() {
     private var currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
     
     private var allMovementsList = listOf<Movement>()
-    private var currentSortMode = "date" // "account", "date", "amount"
+    private var currentSortMode = "date"
+    private var userId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMovementsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Obtener el ID del usuario logueado
+        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        userId = sharedPref.getInt("user_id", -1)
+
+        if (userId == -1) {
+            finish()
+            return
+        }
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -49,21 +60,9 @@ class MovementsActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.sort_account -> {
-                currentSortMode = "account"
-                updateList()
-                true
-            }
-            R.id.sort_date -> {
-                currentSortMode = "date"
-                updateList()
-                true
-            }
-            R.id.sort_amount -> {
-                currentSortMode = "amount"
-                updateList()
-                true
-            }
+            R.id.sort_account -> { currentSortMode = "account"; updateList(); true }
+            R.id.sort_date -> { currentSortMode = "date"; updateList(); true }
+            R.id.sort_amount -> { currentSortMode = "amount"; updateList(); true }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -108,7 +107,7 @@ class MovementsActivity : AppCompatActivity() {
     }
 
     private fun setupFilters() {
-        val accounts = arrayOf("Todas", "Efectivo", "Tarjeta Débito", "Ahorros")
+        val accounts = arrayOf("Todas", "Efectivo", "T. Débito", "T. Crédito", "Vales")
         val accountAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, accounts)
         binding.spinnerAccountFilter.setAdapter(accountAdapter)
         binding.spinnerAccountFilter.setText(currentAccount, false)
@@ -141,7 +140,7 @@ class MovementsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             AppDatabase.getDatabase(this@MovementsActivity)
                 .movementDao()
-                .getAll()
+                .getAll(userId) // Pasamos el userId real
                 .collect { movements ->
                     allMovementsList = movements
                     updateList()

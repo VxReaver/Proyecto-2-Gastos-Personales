@@ -1,5 +1,6 @@
 package com.example.gastospersonales
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,44 +36,46 @@ class DashboardFragment : Fragment() {
         val tvExpense = view.findViewById<TextView>(R.id.tvExpense)
         val rvRecent = view.findViewById<RecyclerView>(R.id.rvRecentMovements)
 
-        // Configurar RecyclerView
+        // 1. Obtener el ID del usuario logueado
+        val sharedPref = requireContext().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        val userId = sharedPref.getInt("user_id", -1)
+
+        if (userId == -1) return
+
+        // 2. Configurar RecyclerView para mostrar movimientos recientes
         adapter = MovementAdapter(emptyList()) { movement ->
             val intent = Intent(requireContext(), EditMovementActivity::class.java)
-            // Aquí se pasaría el ID si tuviéramos la lógica de edición completa
+            intent.putExtra("MOVEMENT_ID", movement.id)
             startActivity(intent)
         }
         rvRecent.layoutManager = LinearLayoutManager(requireContext())
         rvRecent.adapter = adapter
 
-        // Conectar a la Base de Datos
+        // 3. Conectar a la Base de Datos
         val db = AppDatabase.getDatabase(requireContext())
         val dao = db.movementDao()
 
-        // Observar datos en tiempo real
+        // 4. Observar datos en tiempo real filtrados por usuario
         lifecycleScope.launch {
-            // Saldo Total
-            dao.getBalance().collectLatest { balance ->
-                tvTotalBalance.text = "$ ${String.format(Locale.US, "%.2f", balance ?: 0.0)}"
+            dao.getBalance(userId).collectLatest { balance ->
+                tvTotalBalance.text = "$ ${String.format(Locale.US, \"%.2f\", balance ?: 0.0)}"
             }
         }
 
         lifecycleScope.launch {
-            // Ingresos Totales
-            dao.getTotalIncome().collectLatest { income ->
-                tvIncome.text = "+$ ${String.format(Locale.US, "%.2f", income ?: 0.0)}"
+            dao.getTotalIncome(userId).collectLatest { income ->
+                tvIncome.text = "+$ ${String.format(Locale.US, \"%.2f\", income ?: 0.0)}"
             }
         }
 
         lifecycleScope.launch {
-            // Gastos Totales
-            dao.getTotalExpense().collectLatest { expense ->
-                tvExpense.text = "-$ ${String.format(Locale.US, "%.2f", expense ?: 0.0)}"
+            dao.getTotalExpense(userId).collectLatest { expense ->
+                tvExpense.text = "-$ ${String.format(Locale.US, \"%.2f\", expense ?: 0.0)}"
             }
         }
 
         lifecycleScope.launch {
-            // Movimientos Recientes (últimos 5)
-            dao.getRecent(5).collectLatest { movements ->
+            dao.getRecent(userId, 5).collectLatest { movements ->
                 adapter.updateData(movements)
             }
         }

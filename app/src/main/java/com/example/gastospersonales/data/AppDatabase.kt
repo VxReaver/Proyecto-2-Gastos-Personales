@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.gastospersonales.data.converters.DateConverter
 import com.example.gastospersonales.data.dao.MovementDao
-import com.example.gastospersonales.data.dao.UserDao
 import com.example.gastospersonales.data.entities.Movement
 import com.example.gastospersonales.data.entities.User
 
@@ -15,7 +14,6 @@ import com.example.gastospersonales.data.entities.User
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun movementDao(): MovementDao
-    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile

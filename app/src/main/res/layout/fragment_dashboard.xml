@@ -38,7 +38,7 @@
                     android:id="@+id/tvTotalBalance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$ 12,500.00"
+                    android:text="$ 0.00"
                     android:textColor="@color/white"
                     android:textSize="32sp"
                     android:textStyle="bold"
@@ -80,7 +80,7 @@
                         android:id="@+id/tvIncome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+$ 15,000"
+                        android:text="+$ 0.00"
                         android:textColor="#2E7D32"
                         android:textStyle="bold"
                         android:textSize="18sp" />
@@ -113,7 +113,7 @@
                         android:id="@+id/tvExpense"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="-$ 2,500"
+                        android:text="-$ 0.00"
                         android:textColor="#C62828"
                         android:textStyle="bold"
                         android:textSize="18sp" />

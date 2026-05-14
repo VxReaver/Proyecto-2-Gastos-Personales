@@ -15,23 +15,11 @@ interface MovementDao {
     @Delete
     suspend fun delete(movement: Movement)
 
-    @Query("SELECT * FROM movements WHERE id = :id LIMIT 1")
+    @Query("SELECT * FROM movements WHERE id = :id")
     suspend fun getById(id: Int): Movement?
 
     @Query("SELECT * FROM movements ORDER BY fecha DESC")
     fun getAll(): Flow<List<Movement>>
-
-    @Query("SELECT * FROM movements ORDER BY fecha DESC LIMIT :limit")
-    fun getRecent(limit: Int): Flow<List<Movement>>
-
-    @Query("SELECT SUM(cantidad) FROM movements WHERE tipo = 'Ingreso'")
-    fun getTotalIncome(): Flow<Double?>
-
-    @Query("SELECT SUM(cantidad) FROM movements WHERE tipo = 'Gasto'")
-    fun getTotalExpense(): Flow<Double?>
-
-    @Query("SELECT (SELECT TOTAL(cantidad) FROM movements WHERE tipo = 'Ingreso') - (SELECT TOTAL(cantidad) FROM movements WHERE tipo = 'Gasto')")
-    fun getBalance(): Flow<Double?>
 
     @Query("SELECT * FROM movements WHERE categoria = :category ORDER BY fecha DESC")
     fun getByCategory(category: String): Flow<List<Movement>>

@@ -1,8 +1,11 @@
 package com.example.gastospersonales
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,11 +25,23 @@ class CategoryDetailActivity : AppCompatActivity() {
     private var categoryName: String = ""
     private var movementsList = listOf<Movement>()
     private var currentSortMode = "date"
+    private var currentTypeFilter = "Todos"
+    private var userId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCategoryDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Obtener el ID del usuario logueado
+        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        userId = sharedPref.getInt("user_id", -1)
+
+        if (userId == -1) {
+            Toast.makeText(this, "Error de sesión", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         categoryName = intent.getStringExtra("CATEGORY_NAME") ?: ""
         binding.tvCategoryTitle.text = categoryName
@@ -36,7 +51,19 @@ class CategoryDetailActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { finish() }
 
         setupRecyclerView()
+        setupTypeFilter()
         observeMovements()
+    }
+
+    private fun setupTypeFilter() {
+        val types = arrayOf("Todos", "Gasto", "Ingreso")
+        val typeAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, types)
+        binding.spinnerTypeFilter.setAdapter(typeAdapter)
+        binding.spinnerTypeFilter.setText(types[0], false)
+        binding.spinnerTypeFilter.setOnItemClickListener { _, _, position, _ ->
+            currentTypeFilter = types[position]
+            updateList()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -46,21 +73,9 @@ class CategoryDetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.sort_account -> {
-                currentSortMode = "account"
-                updateList()
-                true
-            }
-            R.id.sort_date -> {
-                currentSortMode = "date"
-                updateList()
-                true
-            }
-            R.id.sort_amount -> {
-                currentSortMode = "amount"
-                updateList()
-                true
-            }
+            R.id.sort_account -> { currentSortMode = "account"; updateList(); true }
+            R.id.sort_date -> { currentSortMode = "date"; updateList(); true }
+            R.id.sort_amount -> { currentSortMode = "amount"; updateList(); true }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -79,7 +94,11 @@ class CategoryDetailActivity : AppCompatActivity() {
             .setTitle("Opciones de movimiento")
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> Toast.makeText(this, "Ir a Pantalla 8 (Modificar)", Toast.LENGTH_SHORT).show()
+                    0 -> {
+                        val intent = Intent(this, EditMovementActivity::class.java)
+                        intent.putExtra("MOVEMENT_ID", movement.id)
+                        startActivity(intent)
+                    }
                     1 -> deleteMovement(movement)
                 }
             }
@@ -104,7 +123,7 @@ class CategoryDetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             AppDatabase.getDatabase(this@CategoryDetailActivity)
                 .movementDao()
-                .getByCategory(categoryName)
+                .getByCategory(userId, categoryName)
                 .collect { movements ->
                     movementsList = movements
                     updateList()
@@ -113,15 +132,21 @@ class CategoryDetailActivity : AppCompatActivity() {
     }
 
     private fun updateList() {
-        val sorted = when (currentSortMode) {
-            "account" -> movementsList.sortedBy { it.cuentaOrigen }
-            "amount" -> movementsList.sortedByDescending { it.cantidad }
-            else -> movementsList.sortedByDescending { it.fecha }
+        var filtered = if (currentTypeFilter == "Todos") {
+            movementsList
+        } else {
+            movementsList.filter { it.tipo == currentTypeFilter }
         }
 
-        adapter.updateData(sorted)
+        filtered = when (currentSortMode) {
+            "account" -> filtered.sortedBy { it.cuentaOrigen }
+            "amount" -> filtered.sortedByDescending { it.cantidad }
+            else -> filtered.sortedByDescending { it.fecha }
+        }
+
+        adapter.updateData(filtered)
         
-        val total = sorted.sumOf { it.cantidad }
+        val total = filtered.sumOf { it.cantidad }
         val formatter = NumberFormat.getCurrencyInstance(Locale.US)
         binding.tvTotalAmount.text = formatter.format(total)
     }

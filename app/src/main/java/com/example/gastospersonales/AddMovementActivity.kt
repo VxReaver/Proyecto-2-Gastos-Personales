@@ -1,5 +1,6 @@
 package com.example.gastospersonales
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -17,11 +18,21 @@ import java.util.*
 class AddMovementActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddMovementBinding
     private var selectedDate = Date()
+    private var userId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddMovementBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        userId = sharedPref.getInt("user_id", -1)
+
+        if (userId == -1) {
+            Toast.makeText(this, "Sesión no válida", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         setupSpinners()
         setupDatePicker()
@@ -48,8 +59,8 @@ class AddMovementActivity : AppCompatActivity() {
     }
 
     private fun setupSpinners() {
-        val accounts = arrayOf("Efectivo", "Tarjeta Débito", "Ahorros")
-        val categories = arrayOf("Comida", "Transporte", "Ropa", "Salud", "Educación", "Diversión")
+        val accounts = arrayOf("Efectivo", "T. Débito", "T. Crédito", "Vales")
+        val categories = arrayOf("Comida", "Transporte", "Ropa", "Salud", "Educación", "Diversión", "Casa")
         
         binding.spinnerAccountOrigin.setAdapter(ArrayAdapter(this, android.R.layout.simple_list_item_1, accounts))
         binding.spinnerAccountDest.setAdapter(ArrayAdapter(this, android.R.layout.simple_list_item_1, accounts))
@@ -85,12 +96,13 @@ class AddMovementActivity : AppCompatActivity() {
         }
 
         val movement = Movement(
+            userId = userId,
             tipo = type,
             cantidad = amount,
             cuentaOrigen = binding.spinnerAccountOrigin.text.toString(),
             cuentaDestino = if (type == "Transferencia") binding.spinnerAccountDest.text.toString() else null,
             categoria = if (type == "Transferencia") "Transferencia" else binding.spinnerCategory.text.toString(),
-            descripcion = "",
+            descripcion = binding.etDescription.text.toString(), // Guardamos la descripción
             fecha = selectedDate
         )
 
