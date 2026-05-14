@@ -1,6 +1,5 @@
 package com.example.gastospersonales
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -28,21 +27,11 @@ class MovementsActivity : AppCompatActivity() {
     
     private var allMovementsList = listOf<Movement>()
     private var currentSortMode = "date"
-    private var userId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMovementsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Obtener el ID del usuario logueado
-        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
-        userId = sharedPref.getInt("user_id", -1)
-
-        if (userId == -1) {
-            finish()
-            return
-        }
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -140,7 +129,7 @@ class MovementsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             AppDatabase.getDatabase(this@MovementsActivity)
                 .movementDao()
-                .getAll(userId) // Pasamos el userId real
+                .getAll()
                 .collect { movements ->
                     allMovementsList = movements
                     updateList()

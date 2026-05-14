@@ -1,6 +1,5 @@
 package com.example.gastospersonales
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -26,22 +25,11 @@ class CategoryDetailActivity : AppCompatActivity() {
     private var movementsList = listOf<Movement>()
     private var currentSortMode = "date"
     private var currentTypeFilter = "Todos"
-    private var userId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCategoryDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Obtener el ID del usuario logueado
-        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
-        userId = sharedPref.getInt("user_id", -1)
-
-        if (userId == -1) {
-            Toast.makeText(this, "Error de sesión", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
 
         categoryName = intent.getStringExtra("CATEGORY_NAME") ?: ""
         binding.tvCategoryTitle.text = categoryName
@@ -123,7 +111,7 @@ class CategoryDetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             AppDatabase.getDatabase(this@CategoryDetailActivity)
                 .movementDao()
-                .getByCategory(userId, categoryName)
+                .getByCategory(categoryName)
                 .collect { movements ->
                     movementsList = movements
                     updateList()

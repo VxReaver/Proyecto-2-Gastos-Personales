@@ -7,13 +7,15 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.gastospersonales.data.converters.DateConverter
 import com.example.gastospersonales.data.dao.MovementDao
+import com.example.gastospersonales.data.dao.UserDao
 import com.example.gastospersonales.data.entities.Movement
 import com.example.gastospersonales.data.entities.User
 
-@Database(entities = [User::class, Movement::class], version = 1, exportSchema = false)
+@Database(entities = [User::class, Movement::class], version = 3, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun movementDao(): MovementDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile
@@ -25,7 +27,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "gastos_personales_db"
-                ).build()
+                )
+                .fallbackToDestructiveMigration()
+                .build()
                 INSTANCE = instance
                 instance
             }

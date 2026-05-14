@@ -24,10 +24,38 @@ interface MovementDao {
     @Query("SELECT * FROM movements WHERE categoria = :category ORDER BY fecha DESC")
     fun getByCategory(category: String): Flow<List<Movement>>
 
+    // Ingresos del mes y cuenta específicos
+    @Query("""
+        SELECT SUM(cantidad) FROM movements 
+        WHERE tipo = 'Ingreso' 
+        AND (:cuenta = 'Todas' OR cuentaOrigen = :cuenta)
+        AND CAST(strftime('%Y', fecha / 1000, 'unixepoch') AS INTEGER) = :year
+        AND CAST(strftime('%m', fecha / 1000, 'unixepoch') AS INTEGER) = :month
+    """)
+    fun getMonthlyIncome(cuenta: String, year: Int, month: Int): Flow<Double?>
+
+    // Gastos del mes y cuenta específicos
+    @Query("""
+        SELECT SUM(cantidad) FROM movements 
+        WHERE tipo = 'Gasto' 
+        AND (:cuenta = 'Todas' OR cuentaOrigen = :cuenta)
+        AND CAST(strftime('%Y', fecha / 1000, 'unixepoch') AS INTEGER) = :year
+        AND CAST(strftime('%m', fecha / 1000, 'unixepoch') AS INTEGER) = :month
+    """)
+    fun getMonthlyExpense(cuenta: String, year: Int, month: Int): Flow<Double?>
+
+    // Saldo anterior (Ingresos - Gastos antes del inicio del mes seleccionado)
+    @Query("""
+        SELECT 
+            (SELECT COALESCE(SUM(cantidad), 0.0) FROM movements WHERE tipo = 'Ingreso' AND (:cuenta = 'Todas' OR cuentaOrigen = :cuenta) AND fecha < :startDate) -
+            (SELECT COALESCE(SUM(cantidad), 0.0) FROM movements WHERE tipo = 'Gasto' AND (:cuenta = 'Todas' OR cuentaOrigen = :cuenta) AND fecha < :startDate)
+    """)
+    fun getPreviousBalance(cuenta: String, startDate: Long): Flow<Double?>
+
     @Query("""
         SELECT categoria, SUM(cantidad) as total 
         FROM movements 
-        WHERE (cuentaOrigen = :cuenta OR cuentaDestino = :cuenta)
+        WHERE (:cuenta = 'Todas' OR cuentaOrigen = :cuenta OR cuentaDestino = :cuenta)
         AND CAST(strftime('%Y', fecha / 1000, 'unixepoch') AS INTEGER) = :year
         AND CAST(strftime('%m', fecha / 1000, 'unixepoch') AS INTEGER) = :month
         GROUP BY categoria 

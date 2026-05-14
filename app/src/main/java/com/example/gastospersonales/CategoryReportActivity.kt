@@ -1,10 +1,8 @@
 package com.example.gastospersonales
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +19,6 @@ class CategoryReportActivity : AppCompatActivity() {
     private var currentAccount = "Efectivo"
     private var currentYear = Calendar.getInstance().get(Calendar.YEAR)
     private var currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1 // 1-indexed
-    private var userId: Int = -1
     
     private var observationJob: Job? = null
 
@@ -29,16 +26,6 @@ class CategoryReportActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCategoryReportBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Obtener el ID del usuario logueado
-        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
-        userId = sharedPref.getInt("user_id", -1)
-
-        if (userId == -1) {
-            Toast.makeText(this, "Error de sesión", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
 
         setupRecyclerView()
         setupFilters()
@@ -94,7 +81,7 @@ class CategoryReportActivity : AppCompatActivity() {
         observationJob = lifecycleScope.launch {
             AppDatabase.getDatabase(this@CategoryReportActivity)
                 .movementDao()
-                .getCategoryReport(userId, currentAccount, currentYear, currentMonth)
+                .getCategoryReport(currentAccount, currentYear, currentMonth)
                 .collect { report ->
                     adapter.updateData(report)
                 }
