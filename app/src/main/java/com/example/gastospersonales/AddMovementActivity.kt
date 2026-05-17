@@ -1,5 +1,6 @@
 package com.example.gastospersonales
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -106,7 +107,16 @@ class AddMovementActivity : AppCompatActivity() {
             else -> "Gasto"
         }
 
+        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        val userId = sharedPref.getInt("user_id", -1)
+
+        if (userId == -1) {
+            Toast.makeText(this, "Error: Usuario no identificado", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val movement = Movement(
+            userId = userId,
             tipo = type,
             cantidad = amount,
             cuentaOrigen = spinnerAccountOrigin.text.toString(),

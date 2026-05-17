@@ -15,7 +15,7 @@
         <activity
             android:name=".EditMovementActivity"
             android:exported="false"
-            android:label="Modificar movimiento" />
+            android:label="Modificar Movimiento" />
 
         <activity
             android:name=".CategoryDetailActivity"

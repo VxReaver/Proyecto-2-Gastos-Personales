@@ -7,6 +7,7 @@ import java.util.Date
 @Entity(tableName = "movements")
 data class Movement(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val userId: Int, // Vinculación con el usuario
     val tipo: String, // "Ingreso", "Gasto", "Transferencia"
     val cantidad: Double,
     val cuentaOrigen: String,

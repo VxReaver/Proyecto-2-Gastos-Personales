@@ -53,13 +53,30 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutTypeFilter"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:hint="Seleccionar tipo"
+        app:layout_constraintTop_toBottomOf="@id/cardSummary">
+
+        <AutoCompleteTextView
+            android:id="@+id/spinnerTypeFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMovements"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardSummary"
+        app:layout_constraintTop_toBottomOf="@id/layoutTypeFilter"
         tools:listitem="@layout/item_movement" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

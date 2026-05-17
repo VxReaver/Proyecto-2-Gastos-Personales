@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                     val usuario = db.userDao().login(emailText, passwordText)
 
                     if (usuario != null) {
-                        guardarSesion(usuario.email, usuario.nombre, usuario.avatarId)
+                        guardarSesion(usuario.id, usuario.email, usuario.nombre, usuario.avatarId)
                         Toast.makeText(this@MainActivity, "¡Bienvenido ${usuario.nombre}!", Toast.LENGTH_SHORT).show()
                         irAPantallaPrincipal()
                     } else {
@@ -98,10 +98,11 @@ class MainActivity : AppCompatActivity() {
         return esValido
     }
 
-    private fun guardarSesion(email: String, nombre: String, avatarId: Int) {
+    private fun guardarSesion(id: Int, email: String, nombre: String, avatarId: Int) {
         val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putBoolean("isLoggedIn", true)
+            putInt("user_id", id)
             putString("user_email", email)
             putString("user_name", nombre)
             putInt("user_avatar", avatarId)

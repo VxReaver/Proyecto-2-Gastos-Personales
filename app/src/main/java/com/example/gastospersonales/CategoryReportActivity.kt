@@ -1,5 +1,6 @@
 package com.example.gastospersonales
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -16,9 +17,9 @@ class CategoryReportActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCategoryReportBinding
     private lateinit var adapter: CategoryReportAdapter
     
-    private var currentAccount = "Efectivo"
+    private var currentAccount = "Todas"
     private var currentYear = Calendar.getInstance().get(Calendar.YEAR)
-    private var currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1 // 1-indexed
+    private var currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
     
     private var observationJob: Job? = null
 
@@ -27,13 +28,16 @@ class CategoryReportActivity : AppCompatActivity() {
         binding = ActivityCategoryReportBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener { finish() }
+
         setupRecyclerView()
         setupFilters()
         observeData()
     }
 
     private fun setupRecyclerView() {
-        // Al hacer clic en una categoría, abrimos la Pantalla 6 (Detalle)
         adapter = CategoryReportAdapter(emptyList()) { categoryName ->
             val intent = Intent(this, CategoryDetailActivity::class.java)
             intent.putExtra("CATEGORY_NAME", categoryName)
@@ -44,8 +48,7 @@ class CategoryReportActivity : AppCompatActivity() {
     }
 
     private fun setupFilters() {
-        // Accounts Filter
-        val accounts = arrayOf("Efectivo", "Tarjeta Débito", "Ahorros")
+        val accounts = arrayOf("Todas", "Efectivo", "Tarjeta Débito", "Tarjeta Crédito", "Ahorros")
         val accountAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, accounts)
         binding.spinnerAccountFilter.setAdapter(accountAdapter)
         binding.spinnerAccountFilter.setText(currentAccount, false)
@@ -54,7 +57,6 @@ class CategoryReportActivity : AppCompatActivity() {
             observeData()
         }
 
-        // Year Filter
         val years = (2020..2030).map { it.toString() }.toTypedArray()
         val yearAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, years)
         binding.spinnerYear.setAdapter(yearAdapter)
@@ -64,7 +66,6 @@ class CategoryReportActivity : AppCompatActivity() {
             observeData()
         }
 
-        // Month Filter
         val months = arrayOf("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
                              "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
         val monthAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, months)
@@ -77,11 +78,14 @@ class CategoryReportActivity : AppCompatActivity() {
     }
 
     private fun observeData() {
+        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        val userId = sharedPref.getInt("user_id", -1)
+
         observationJob?.cancel()
         observationJob = lifecycleScope.launch {
             AppDatabase.getDatabase(this@CategoryReportActivity)
                 .movementDao()
-                .getCategoryReport(currentAccount, currentYear, currentMonth)
+                .getCategoryReport(userId, currentAccount, currentYear, currentMonth)
                 .collect { report ->
                     adapter.updateData(report)
                 }
