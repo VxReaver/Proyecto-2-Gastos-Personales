@@ -24,6 +24,24 @@ interface MovementDao {
     @Query("SELECT * FROM movements WHERE userId = :userId ORDER BY fecha DESC LIMIT :limit")
     fun getRecent(userId: Int, limit: Int): Flow<List<Movement>>
 
+    @Query("""
+        SELECT SUM(cantidad) FROM movements 
+        WHERE userId = :userId AND tipo = 'Ingreso'
+        AND (:cuenta = 'Todas' OR cuentaOrigen = :cuenta)
+        AND CAST(strftime('%Y', fecha / 1000, 'unixepoch') AS INTEGER) = :year
+        AND CAST(strftime('%m', fecha / 1000, 'unixepoch') AS INTEGER) = :month
+    """)
+    fun getFilteredIncome(userId: Int, cuenta: String, year: Int, month: Int): Flow<Double?>
+
+    @Query("""
+        SELECT SUM(cantidad) FROM movements 
+        WHERE userId = :userId AND tipo = 'Gasto'
+        AND (:cuenta = 'Todas' OR cuentaOrigen = :cuenta)
+        AND CAST(strftime('%Y', fecha / 1000, 'unixepoch') AS INTEGER) = :year
+        AND CAST(strftime('%m', fecha / 1000, 'unixepoch') AS INTEGER) = :month
+    """)
+    fun getFilteredExpense(userId: Int, cuenta: String, year: Int, month: Int): Flow<Double?>
+
     @Query("SELECT SUM(cantidad) FROM movements WHERE userId = :userId AND tipo = 'Ingreso'")
     fun getTotalIncome(userId: Int): Flow<Double?>
 
