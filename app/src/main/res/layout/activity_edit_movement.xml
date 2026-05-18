@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/background_dark"
     tools:context=".EditMovementActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -18,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#00695C"
+            android:background="@color/primary_green"
             app:navigationIcon="@drawable/ic_back"
             app:title="Modificar movimiento"
             app:titleTextColor="@color/white">
@@ -28,7 +28,8 @@
                 android:layout_height="24dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_wallet" />
+                android:src="@drawable/ic_wallet"
+                app:tint="@color/white" />
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -51,14 +52,17 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Cantidad">
+                android:hint="Cantidad"
+                android:textColorHint="@color/text_secondary"
+                app:hintTextColor="@color/primary_green"
+                app:boxStrokeColor="@color/primary_green">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAmount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
                     android:inputType="numberDecimal"
-                    android:text="$ 480.00"
                     android:textStyle="bold" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,21 +77,25 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginEnd="12dp"
-                    android:src="@drawable/ic_accounts" />
+                    android:src="@drawable/ic_accounts"
+                    app:tint="@color/primary_green" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilAccount"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Cuenta">
+                    android:hint="Cuenta"
+                    android:textColorHint="@color/text_secondary"
+                    app:hintTextColor="@color/primary_green"
+                    app:boxStrokeColor="@color/primary_green">
 
                     <AutoCompleteTextView
                         android:id="@+id/actvAccount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:text="T. Crédito" />
+                        android:textColor="@color/text_primary"
+                        android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -102,21 +110,25 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginEnd="12dp"
-                    android:src="@drawable/ic_home" />
+                    android:src="@drawable/ic_home"
+                    app:tint="@color/primary_green" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilCategory"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Categoría">
+                    android:hint="Categoría"
+                    android:textColorHint="@color/text_secondary"
+                    app:hintTextColor="@color/primary_green"
+                    app:boxStrokeColor="@color/primary_green">
 
                     <AutoCompleteTextView
                         android:id="@+id/actvCategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:text="Hogar" />
+                        android:textColor="@color/text_primary"
+                        android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -126,16 +138,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Descripción">
+                android:hint="Descripción"
+                android:textColorHint="@color/text_secondary"
+                app:hintTextColor="@color/primary_green"
+                app:boxStrokeColor="@color/primary_green">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
                     android:gravity="top"
                     android:inputType="textMultiLine"
-                    android:lines="4"
-                    android:text="Pago Renta Junio" />
+                    android:lines="4" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -145,16 +160,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Fecha"
+                android:textColorHint="@color/text_secondary"
+                app:hintTextColor="@color/primary_green"
+                app:boxStrokeColor="@color/primary_green"
                 app:endIconDrawable="@drawable/ic_calendar"
+                app:endIconTint="@color/text_secondary"
                 app:endIconMode="custom">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
                     android:focusable="false"
-                    android:inputType="none"
-                    android:text="15 Jun 2024" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -165,9 +184,10 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_margin="20dp"
-        android:backgroundTint="#00695C"
+        android:backgroundTint="@color/primary_green"
         android:text="Guardar"
         android:textAllCaps="false"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent" />
 

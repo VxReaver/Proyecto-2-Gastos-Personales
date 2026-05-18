@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="12dp"
+    android:background="@color/surface_dark">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,6 +16,7 @@
             android:layout_height="wrap_content"
             android:text="Comida"
             android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:textSize="16sp" />
         <TextView
             android:id="@+id/tv_category_amount"
@@ -22,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:text="$1,500.00"
-            android:textColor="?attr/colorPrimary" />
+            android:textColor="@color/primary_green" />
     </RelativeLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -32,6 +34,8 @@
         android:layout_marginTop="8dp"
         app:trackThickness="8dp"
         app:trackCornerRadius="4dp"
+        app:indicatorColor="@color/primary_green"
+        app:trackColor="#333333"
         android:progress="70" />
 
     <TextView
@@ -40,5 +44,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:text="70%"
+        android:textColor="@color/text_secondary"
         android:textSize="12sp" />
 </LinearLayout>

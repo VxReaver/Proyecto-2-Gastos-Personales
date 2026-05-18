@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
+    android:background="@color/background_dark"
     tools:context=".MainActivity">
 
     <TextView
@@ -13,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Gastos Personales"
+        android:textColor="@color/primary_green"
         android:textSize="32sp"
         android:textStyle="bold"
         android:layout_marginTop="64dp"
@@ -27,12 +29,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:hint="Correo electrónico"
+        android:textColorHint="@color/text_secondary"
+        app:hintTextColor="@color/primary_green"
+        app:boxStrokeColor="@color/primary_green"
         app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -43,13 +49,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="Contraseña"
+        android:textColorHint="@color/text_secondary"
+        app:hintTextColor="@color/primary_green"
+        app:boxStrokeColor="@color/primary_green"
         app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/text_secondary"
         app:layout_constraintTop_toBottomOf="@id/tilEmail">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,6 +70,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Iniciar sesión"
+        android:backgroundTint="@color/primary_green"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/tilPassword" />
 
     <Button
@@ -68,6 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Crear cuenta"
+        android:textColor="@color/primary_green"
         app:layout_constraintTop_toBottomOf="@id/btnLogin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

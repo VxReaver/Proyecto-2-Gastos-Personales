@@ -4,24 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/background_dark"
     tools:context=".MovementsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#00695C"
+        android:background="@color/primary_green"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_back"
         app:title="Movimientos"
-        app:titleTextColor="#FFFFFF" />
+        app:titleTextColor="@color/white" />
 
     <LinearLayout
         android:id="@+id/layoutFilters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="@color/surface_dark"
         android:orientation="horizontal"
         android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
@@ -32,13 +32,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:hint="Cuenta">
+            android:hint="Cuenta"
+            android:textColorHint="@color/text_secondary"
+            app:hintTextColor="@color/primary_green"
+            app:boxStrokeColor="@color/primary_green">
 
             <AutoCompleteTextView
                 android:id="@+id/spinnerAccountFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
+                android:textColor="@color/text_primary"
                 android:textSize="12sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,13 +52,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="0.8"
-            android:hint="Año">
+            android:hint="Año"
+            android:textColorHint="@color/text_secondary"
+            app:hintTextColor="@color/primary_green"
+            app:boxStrokeColor="@color/primary_green">
 
             <AutoCompleteTextView
                 android:id="@+id/spinnerYear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
+                android:textColor="@color/text_primary"
                 android:textSize="12sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,13 +72,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:hint="Mes">
+            android:hint="Mes"
+            android:textColorHint="@color/text_secondary"
+            app:hintTextColor="@color/primary_green"
+            app:boxStrokeColor="@color/primary_green">
 
             <AutoCompleteTextView
                 android:id="@+id/spinnerMonth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
+                android:textColor="@color/text_primary"
                 android:textSize="12sp" />
         </com.google.android.material.textfield.TextInputLayout>
 

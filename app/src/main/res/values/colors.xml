@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Colores Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta Profesional Dark (Verde) -->
+    <color name="primary_green">#2E7D32</color>
+    <color name="primary_variant">#1B5E20</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="accent_green">#81C784</color>
+
+    <!-- Fondos y Superficies (Gris Oscuro) -->
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="surface_variant">#2C2C2C</color>
+
+    <!-- Colores de Fuente (Contraste alto para legibilidad) -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B0B0</color>
+    <color name="text_hint">#757575</color>
+
+    <!-- Colores Semánticos -->
+    <color name="income_green">#81C784</color>
+    <color name="expense_red">#CF6679</color>
+    <color name="transfer_blue">#64B5F6</color>
+
+    <!-- Compatibilidad con nombres anteriores -->
+    <color name="primary_color">#2E7D32</color>
+    <color name="secondary_color">#81C784</color>
 </resources>

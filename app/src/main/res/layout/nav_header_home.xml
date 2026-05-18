@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:background="#FFFFFF"
+    android:background="@color/surface_dark"
     android:padding="16dp">
 
     <ImageView
@@ -33,14 +33,14 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_logout"
-            app:tint="#00695C" />
+            app:tint="@color/accent_green" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cerrar sesión"
             android:textSize="10sp"
-            android:textColor="#00695C" />
+            android:textColor="@color/accent_green" />
     </LinearLayout>
 
     <TextView
@@ -48,8 +48,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Juan Manuel Díaz Pérez"
-        android:textColor="#212121"
+        android:text="Nombre de Usuario"
+        android:textColor="@color/text_primary"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/ivUserAvatar"
@@ -60,8 +60,8 @@
         android:id="@+id/tvHeaderEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="juan.diaz.pe@ejemplo.com"
-        android:textColor="#757575"
+        android:text="usuario@ejemplo.com"
+        android:textColor="@color/text_secondary"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/tvHeaderName"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,14 +81,14 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_accounts"
-            app:tint="#00695C" />
+            app:tint="@color/primary_green" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="Gastos Personales"
-            android:textColor="#00695C"
+            android:textColor="@color/primary_green"
             android:textStyle="bold" />
     </LinearLayout>
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_dark"
     android:padding="16dp"
     tools:context=".AddExpenseActivity">
 
@@ -17,7 +18,7 @@
             android:id="@+id/toolbarAdd"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#00695C"
+            android:background="@color/primary_green"
             app:title="Agregar Movimiento"
             app:titleTextColor="@color/white"
             app:navigationIcon="?attr/homeAsUpIndicator" />
@@ -30,12 +31,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:hint="Descripción"
+        android:textColorHint="@color/text_secondary"
+        app:hintTextColor="@color/primary_green"
+        app:boxStrokeColor="@color/primary_green"
         app:layout_constraintTop_toBottomOf="@id/appBarLayoutAdd">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,12 +51,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="Monto"
+        android:textColorHint="@color/text_secondary"
+        app:hintTextColor="@color/primary_green"
+        app:boxStrokeColor="@color/primary_green"
         app:layout_constraintTop_toBottomOf="@id/tilDescription">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,6 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Categoría"
+        android:textColor="@color/text_primary"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilAmount" />
@@ -70,6 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@color/text_secondary"
         app:layout_constraintTop_toBottomOf="@id/tvCategoryLabel" />
 
     <Button
@@ -77,8 +88,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#00695C"
+        android:backgroundTint="@color/primary_green"
         android:text="Guardar Movimiento"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/spinnerCategory" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

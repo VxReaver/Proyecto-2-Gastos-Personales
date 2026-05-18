@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/white">
+    android:background="@color/background_dark">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -21,7 +21,7 @@
             android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#00695C" />
+            app:tint="@color/primary_green" />
 
         <TextView
             android:id="@+id/tvTitle"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Crear cuenta"
-            android:textColor="#00695C"
+            android:textColor="@color/primary_green"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Registra tus datos para comenzar"
-            android:textColor="#757575"
+            android:textColor="@color/text_secondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle" />
@@ -54,7 +54,8 @@
             android:src="@drawable/ic_person"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+            app:tint="@color/text_secondary" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilEmail"
@@ -63,13 +64,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:hint="Correo electrónico"
+            android:textColorHint="@color/text_secondary"
+            app:hintTextColor="@color/primary_green"
+            app:boxStrokeColor="@color/primary_green"
             app:startIconDrawable="@drawable/ic_email"
+            app:startIconTint="@color/text_secondary"
             app:layout_constraintTop_toBottomOf="@id/ivMainAvatar">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,13 +86,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Nombre de usuario"
+            android:textColorHint="@color/text_secondary"
+            app:hintTextColor="@color/primary_green"
+            app:boxStrokeColor="@color/primary_green"
             app:startIconDrawable="@drawable/ic_person"
+            app:startIconTint="@color/text_secondary"
             app:layout_constraintTop_toBottomOf="@id/tilEmail">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,14 +108,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Contraseña"
+            android:textColorHint="@color/text_secondary"
+            app:hintTextColor="@color/primary_green"
+            app:boxStrokeColor="@color/primary_green"
             app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/text_secondary"
             app:startIconDrawable="@drawable/ic_lock"
+            app:startIconTint="@color/text_secondary"
             app:layout_constraintTop_toBottomOf="@id/tilUsername">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,14 +132,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Confirmar contraseña"
+            android:textColorHint="@color/text_secondary"
+            app:hintTextColor="@color/primary_green"
+            app:boxStrokeColor="@color/primary_green"
             app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/text_secondary"
             app:startIconDrawable="@drawable/ic_lock"
+            app:startIconTint="@color/text_secondary"
             app:layout_constraintTop_toBottomOf="@id/tilPassword">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,7 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Elige tu avatar"
-            android:textColor="#00695C"
+            android:textColor="@color/primary_green"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword" />
@@ -153,7 +176,8 @@
                 android:layout_margin="8dp"
                 android:src="@drawable/ic_person"
                 android:background="@drawable/avatar_selector"
-                android:padding="4dp" />
+                android:padding="4dp"
+                app:tint="@color/text_secondary" />
 
             <ImageView
                 android:id="@+id/ivAvatar2"
@@ -162,7 +186,8 @@
                 android:layout_margin="8dp"
                 android:src="@drawable/ic_person"
                 android:background="@drawable/avatar_selector"
-                android:padding="4dp" />
+                android:padding="4dp"
+                app:tint="@color/text_secondary" />
 
             <ImageView
                 android:id="@+id/ivAvatar3"
@@ -171,7 +196,8 @@
                 android:layout_margin="8dp"
                 android:src="@drawable/ic_person"
                 android:background="@drawable/avatar_selector"
-                android:padding="4dp" />
+                android:padding="4dp"
+                app:tint="@color/text_secondary" />
 
             <ImageView
                 android:id="@+id/ivAvatar4"
@@ -180,7 +206,8 @@
                 android:layout_margin="8dp"
                 android:src="@drawable/ic_person"
                 android:background="@drawable/avatar_selector"
-                android:padding="4dp" />
+                android:padding="4dp"
+                app:tint="@color/text_secondary" />
 
         </LinearLayout>
 
@@ -189,7 +216,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="32dp"
-            android:backgroundTint="#00695C"
+            android:backgroundTint="@color/primary_green"
             android:text="Crear cuenta"
             android:textAllCaps="false"
             android:textColor="@color/white"
@@ -202,6 +229,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:text="¿Ya tienes una cuenta? Inicia sesión"
+            android:textColor="@color/text_secondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

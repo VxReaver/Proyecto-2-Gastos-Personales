@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/background_dark"
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +23,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="#00695C"
+                android:background="@color/primary_green"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -38,7 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Bienvenido a tu control de gastos" />
+                android:text="Bienvenido a tu control de gastos"
+                android:textColor="@color/text_primary" />
         </FrameLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -48,7 +50,7 @@
             android:layout_margin="16dp"
             android:contentDescription="Agregar gasto"
             android:src="@android:drawable/ic_input_add"
-            app:backgroundTint="#00695C"
+            app:backgroundTint="@color/primary_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@color/white" />
@@ -61,9 +63,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:background="@color/surface_dark"
         app:headerLayout="@layout/nav_header_home"
         app:menu="@menu/activity_home_drawer"
-        app:itemIconTint="#00695C"
-        app:itemTextColor="#212121" />
+        app:itemIconTint="@color/primary_green"
+        app:itemTextColor="@color/text_primary" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
