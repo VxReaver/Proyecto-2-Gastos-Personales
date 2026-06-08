@@ -48,6 +48,16 @@
             android:label="Agregar Movimiento" />
 
         <activity
+            android:name=".GroupPanelActivity"
+            android:exported="false"
+            android:label="Panel de Grupo" />
+
+        <activity
+            android:name=".GroupManagementActivity"
+            android:exported="false"
+            android:label="Gestión de Grupos" />
+
+        <activity
             android:name=".CategoryReportActivity"
             android:exported="false"
             android:label="Reporte por Categorías" />

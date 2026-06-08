@@ -113,6 +113,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, CategoryReportActivity::class.java)
                 startActivity(intent)
             }
+            R.id.nav_shared_finances -> {
+                val intent = Intent(this, GroupManagementActivity::class.java)
+                startActivity(intent)
+            }
             R.id.nav_help -> {
                 // Implementar Ayuda
             }
