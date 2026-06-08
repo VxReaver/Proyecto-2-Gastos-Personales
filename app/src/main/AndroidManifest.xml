@@ -13,6 +13,11 @@
         android:theme="@style/Theme.GastosPersonales">
 
         <activity
+            android:name=".AboutActivity"
+            android:exported="false"
+            android:label="Acerca de" />
+
+        <activity
             android:name=".EditMovementActivity"
             android:exported="false"
             android:label="Modificar Movimiento" />
@@ -46,6 +51,16 @@
             android:name=".AddMovementActivity"
             android:exported="false"
             android:label="Agregar Movimiento" />
+
+        <activity
+            android:name=".GroupPanelActivity"
+            android:exported="false"
+            android:label="Panel de Grupo" />
+
+        <activity
+            android:name=".GroupManagementActivity"
+            android:exported="false"
+            android:label="Gestión de Grupos" />
 
         <activity
             android:name=".CategoryReportActivity"
