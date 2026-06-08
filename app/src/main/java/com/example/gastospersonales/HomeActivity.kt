@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.example.gastospersonales.data.entities.Account
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
@@ -106,7 +107,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(intent)
             }
             R.id.nav_accounts -> {
-                // Implementar fragmento o actividad de cuentas
+              val intent = Intent(this, Account::class.java)
+                startActivity(intent)
             }
             R.id.nav_categories -> {
                 val intent = Intent(this, CategoryReportActivity::class.java)
