@@ -14,4 +14,14 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Icono de categoría" />
 
+    <ImageView
+        android:id="@+id/ivSelected"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_check"
+        android:visibility="gone"
+        app:tint="@color/primary"
+        android:importantForAccessibility="no" />
+
 </FrameLayout>
