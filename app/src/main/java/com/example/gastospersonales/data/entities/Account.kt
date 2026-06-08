@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "accounts")
 data class Account(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val userId: Int,
+    val userId: Int = 0,
     val name: String,
-    val initialBalance: Double = 0.0
+    val initialBalance: Double = 0.0,
+    val iconRes: Int = 0,
+    val hasMovements: Boolean = false
 )
