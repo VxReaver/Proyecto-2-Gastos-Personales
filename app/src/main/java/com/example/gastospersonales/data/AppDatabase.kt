@@ -7,24 +7,39 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.gastospersonales.data.converters.DateConverter
 import com.example.gastospersonales.data.dao.AccountDao
+import com.example.gastospersonales.data.dao.CategoryDao
 import com.example.gastospersonales.data.dao.GroupDao
 import com.example.gastospersonales.data.dao.GroupMemberDao
 import com.example.gastospersonales.data.dao.MovementDao
 import com.example.gastospersonales.data.dao.SharedExpenseDao
 import com.example.gastospersonales.data.dao.UserDao
 import com.example.gastospersonales.data.entities.Account
+import com.example.gastospersonales.data.entities.Category
 import com.example.gastospersonales.data.entities.Group
 import com.example.gastospersonales.data.entities.GroupMember
 import com.example.gastospersonales.data.entities.Movement
 import com.example.gastospersonales.data.entities.SharedExpense
 import com.example.gastospersonales.data.entities.User
 
-@Database(entities = [User::class, Movement::class, Account::class, Group::class, GroupMember::class, SharedExpense::class], version = 6, exportSchema = false)
+@Database(
+    entities = [
+        User::class, 
+        Movement::class, 
+        Account::class, 
+        Group::class, 
+        GroupMember::class, 
+        SharedExpense::class, 
+        Category::class
+    ], 
+    version = 7, 
+    exportSchema = false
+)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun movementDao(): MovementDao
     abstract fun userDao(): UserDao
     abstract fun accountDao(): AccountDao
+    abstract fun categoryDao(): CategoryDao
     abstract fun groupDao(): GroupDao
     abstract fun groupMemberDao(): GroupMemberDao
     abstract fun sharedExpenseDao(): SharedExpenseDao

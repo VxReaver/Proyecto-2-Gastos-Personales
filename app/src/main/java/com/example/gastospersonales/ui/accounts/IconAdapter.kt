@@ -28,6 +28,8 @@ class IconAdapter(
 
         fun bind(iconRes: Int) {
             binding.ivIcon.setImageResource(iconRes)
+            
+            // ivSelected ahora existe en item_icon_selector.xml
             binding.ivSelected.visibility = if (iconRes == selectedIcon) View.VISIBLE else View.GONE
             
             binding.root.setOnClickListener {
@@ -35,9 +37,12 @@ class IconAdapter(
                 selectedIcon = iconRes
                 onIconSelected(iconRes)
                 
-                // Actualizar visualmente la selección
-                notifyItemChanged(icons.indexOf(oldSelected))
-                notifyItemChanged(icons.indexOf(selectedIcon))
+                // Buscamos las posiciones para actualizar solo los elementos necesarios
+                val oldPosition = icons.indexOf(oldSelected)
+                val newPosition = icons.indexOf(selectedIcon)
+                
+                if (oldPosition != -1) notifyItemChanged(oldPosition)
+                if (newPosition != -1) notifyItemChanged(newPosition)
             }
         }
     }
