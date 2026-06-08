@@ -13,6 +13,11 @@
         android:theme="@style/Theme.GastosPersonales">
 
         <activity
+            android:name=".AboutActivity"
+            android:exported="false"
+            android:label="Acerca de" />
+
+        <activity
             android:name=".EditMovementActivity"
             android:exported="false"
             android:label="Modificar Movimiento" />

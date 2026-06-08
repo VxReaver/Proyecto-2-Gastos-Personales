@@ -65,6 +65,9 @@ interface MovementDao {
         ORDER BY total DESC
     """)
     fun getCategoryReport(userId: Int, cuenta: String, year: Int, month: Int): Flow<List<CategorySum>>
+
+    @Query("SELECT COUNT(*) FROM movements WHERE categoria = :categoryName AND userId = :userId")
+    suspend fun countMovementsByCategory(categoryName: String, userId: Int): Int
 }
 
 data class CategorySum(

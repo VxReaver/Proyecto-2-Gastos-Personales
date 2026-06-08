@@ -87,7 +87,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         tvEmail.text = email
         
         // Mapear el ID del avatar al recurso correspondiente
-        // Por ahora todos usan ic_person, pero aquí se cambiaría según el ID
         ivAvatar.setImageResource(R.drawable.ic_person)
     }
 
@@ -121,7 +120,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // Implementar Ayuda
             }
             R.id.nav_about -> {
-                // Implementar Acerca de
+                val intent = Intent(this, AboutActivity::class.java)
+                startActivity(intent)
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
