@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sort_account"
+        android:title="Ordenar por cuenta"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_date"
+        android:title="Ordenar por fecha"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_amount"
+        android:title="Ordenar por cantidad"
+        app:showAsAction="never" />
+</menu>

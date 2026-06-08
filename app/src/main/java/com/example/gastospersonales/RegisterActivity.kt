@@ -11,8 +11,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.gastospersonales.data.AppDatabase
+import com.example.gastospersonales.data.entities.User
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -76,10 +80,37 @@ class RegisterActivity : AppCompatActivity() {
                 if (selectedAvatarId == -1) {
                     Toast.makeText(this, "Por favor selecciona un avatar", Toast.LENGTH_SHORT).show()
                 } else {
-                    // Aquí se guardaría en la base de datos local
-                    Toast.makeText(this, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show()
-                    finish()
+                    registrarUsuario(email, username, password)
                 }
+            }
+        }
+    }
+
+    private fun registrarUsuario(email: String, nombre: String, pass: String) {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(this@RegisterActivity)
+            
+            // Verificar si el correo ya existe
+            val existingUser = db.userDao().getUserByEmail(email)
+            if (existingUser != null) {
+                findViewById<TextInputLayout>(R.id.tilEmail).error = "Este correo ya está registrado"
+                return@launch
+            }
+
+            // Crear el nuevo usuario
+            val newUser = User(
+                nombre = nombre,
+                email = email,
+                password = pass,
+                avatarId = selectedAvatarId
+            )
+
+            try {
+                db.userDao().insert(newUser)
+                Toast.makeText(this@RegisterActivity, "¡Cuenta creada con éxito!", Toast.LENGTH_SHORT).show()
+                finish() // Regresar al Login
+            } catch (e: Exception) {
+                Toast.makeText(this@RegisterActivity, "Error al crear la cuenta", Toast.LENGTH_SHORT).show()
             }
         }
     }

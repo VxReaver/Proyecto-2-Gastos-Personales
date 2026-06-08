@@ -20,6 +20,10 @@
             android:id="@+id/nav_categories"
             android:icon="@drawable/ic_categories"
             android:title="Categorías" />
+        <item
+            android:id="@+id/nav_shared_finances"
+            android:icon="@drawable/ic_wallet"
+            android:title="Finanzas Compartidas" />
     </group>
 
     <item android:title="Otros">

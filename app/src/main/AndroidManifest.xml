@@ -11,20 +11,62 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GastosPersonales">
+
+        <activity
+            android:name=".EditMovementActivity"
+            android:exported="false"
+            android:label="Modificar Movimiento" />
+
+        <activity
+            android:name=".CategoryDetailActivity"
+            android:exported="false"
+            android:label="Detalle de Categoría" />
+
+        <activity
+            android:name=".MovementsActivity"
+            android:exported="false"
+            android:label="Movimientos" />
+
+        <activity
+            android:name=".AddExpenseActivity"
+            android:exported="false"
+            android:label="Agregar Movimiento" />
+
         <activity
             android:name=".HomeActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.GastosPersonales.NoActionBar" />
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".AddMovementActivity"
+            android:exported="false"
+            android:label="Agregar Movimiento" />
+
+        <activity
+            android:name=".GroupPanelActivity"
+            android:exported="false"
+            android:label="Panel de Grupo" />
+
+        <activity
+            android:name=".GroupManagementActivity"
+            android:exported="false"
+            android:label="Gestión de Grupos" />
+
+        <activity
+            android:name=".CategoryReportActivity"
+            android:exported="false"
+            android:label="Reporte por Categorías" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
