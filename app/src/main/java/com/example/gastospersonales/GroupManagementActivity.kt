@@ -6,10 +6,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 
-class GroupManagementActivity : AppCompatActivity() {
-
-    private lateinit var groupListFragment: GroupListFragment
-    private lateinit var createJoinGroupFragment: CreateJoinGroupFragment
+class GroupManagementActivity : AppCompatActivity(), GroupManagementFragment {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,11 +17,8 @@ class GroupManagementActivity : AppCompatActivity() {
         supportActionBar?.title = "Finanzas Compartidas"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        groupListFragment = GroupListFragment()
-        createJoinGroupFragment = CreateJoinGroupFragment()
-
         if (savedInstanceState == null) {
-            replaceFragment(groupListFragment)
+            replaceFragment(GroupListFragment())
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.container)) { v, insets ->
@@ -37,11 +31,10 @@ class GroupManagementActivity : AppCompatActivity() {
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
-            .addToBackStack(null)
             .commit()
     }
 
-    fun switchToCreateJoin(isCreating: Boolean) {
+    override fun switchToCreateJoin(isCreating: Boolean) {
         val fragment = CreateJoinGroupFragment.newInstance(isCreating)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
@@ -49,17 +42,20 @@ class GroupManagementActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun switchToList() {
+    override fun switchToList() {
         supportFragmentManager.popBackStack()
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            finish()
+        }
         return true
     }
 }
 
-// Para que CreateJoinGroupFragment pueda acceder a GroupManagementActivity
 interface GroupManagementFragment {
     fun switchToCreateJoin(isCreating: Boolean)
     fun switchToList()

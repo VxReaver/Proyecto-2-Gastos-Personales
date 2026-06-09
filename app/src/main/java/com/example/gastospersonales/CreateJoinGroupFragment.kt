@@ -20,10 +20,14 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 import java.util.Date
 
+import androidx.lifecycle.ViewModelProvider
+import com.example.gastospersonales.ui.GroupViewModel
+
 class CreateJoinGroupFragment : Fragment() {
 
     private var currentUserId = -1
     private var isCreating = true
+    private lateinit var viewModel: GroupViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +39,8 @@ class CreateJoinGroupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel = ViewModelProvider(this)[GroupViewModel::class.java]
+        
         val radioGroupMode = view.findViewById<RadioGroup>(R.id.radioGroupMode)
         val rbCreate = view.findViewById<RadioButton>(R.id.rbCreate)
         val rbJoin = view.findViewById<RadioButton>(R.id.rbJoin)
@@ -48,7 +53,8 @@ class CreateJoinGroupFragment : Fragment() {
 
         // Obtener userId
         val sharedPref = requireContext().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
-        currentUserId = sharedPref.getInt("user_id", -1)
+        val userIdInt = sharedPref.getInt("user_id", -1)
+        currentUserId = userIdInt
 
         // Obtener modo desde argumentos
         isCreating = arguments?.getBoolean("IS_CREATING", true) ?: true
@@ -62,18 +68,52 @@ class CreateJoinGroupFragment : Fragment() {
         }
 
         btnConfirm.setOnClickListener {
+            android.util.Log.d("CREATE_GROUP", "Confirm button clicked. isCreating: $isCreating")
+            val userIdStr = if (currentUserId != -1) currentUserId.toString() else "guest"
+            
             if (isCreating) {
-                createGroup(
-                    etGroupName.text.toString(),
-                    etGroupDescription.text.toString()
-                )
+                val nombre = etGroupName.text.toString().trim()
+                if (nombre.isEmpty()) {
+                    Toast.makeText(requireContext(), "Nombre obligatorio", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                android.util.Log.d("CREATE_GROUP", "Calling createGroup for: $nombre")
+                try {
+                    viewModel.createGroup(nombre, userIdStr) {
+                        android.util.Log.d("CREATE_GROUP", "Group created successfully in Firestore")
+                        Toast.makeText(requireContext(), "Grupo creado con éxito", Toast.LENGTH_SHORT).show()
+                        (activity as? GroupManagementActivity)?.switchToList()
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.e("CREATE_GROUP", "Error calling createGroup", e)
+                    Toast.makeText(requireContext(), "Error al crear grupo: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             } else {
-                joinGroup(etGroupCode.text.toString())
+                val codigo = etGroupCode.text.toString().trim().uppercase()
+                if (codigo.isEmpty()) {
+                    Toast.makeText(requireContext(), "Código obligatorio", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                android.util.Log.d("JOIN_GROUP", "Calling joinGroup for code: $codigo")
+                try {
+                    viewModel.joinGroup(codigo, userIdStr) { success ->
+                        android.util.Log.d("JOIN_GROUP", "Join result: $success")
+                        if (success) {
+                            Toast.makeText(requireContext(), "Te uniste al grupo", Toast.LENGTH_SHORT).show()
+                            (activity as? GroupManagementActivity)?.switchToList()
+                        } else {
+                            Toast.makeText(requireContext(), "Código inválido o grupo no encontrado", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.e("JOIN_GROUP", "Error calling joinGroup", e)
+                    Toast.makeText(requireContext(), "Error al unirse: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
         }
 
         btnBack.setOnClickListener {
-            (parentFragment as? GroupManagementFragment)?.switchToList()
+            (activity as? GroupManagementActivity)?.switchToList()
         }
     }
 
@@ -96,85 +136,6 @@ class CreateJoinGroupFragment : Fragment() {
             etName.visibility = View.GONE
             etDesc.visibility = View.GONE
             etCode.visibility = View.VISIBLE
-        }
-    }
-
-    private fun createGroup(nombre: String, descripcion: String) {
-        if (nombre.isEmpty()) {
-            Toast.makeText(requireContext(), "Por favor ingresa el nombre del grupo", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (currentUserId == -1) {
-            Toast.makeText(requireContext(), "Error: Usuario no identificado", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            val code = CodeGenerator.generateGroupCode()
-
-            val group = Group(
-                nombre = nombre,
-                codigoUnico = code,
-                usuarioCreador = currentUserId,
-                fechaCreacion = Date(),
-                descripcion = descripcion
-            )
-
-            db.groupDao().insert(group)
-
-            // Obtener el grupo creado para agregar al usuario como miembro
-            val createdGroup = db.groupDao().getByCode(code)
-            createdGroup?.let {
-                val member = GroupMember(
-                    groupId = it.id,
-                    userId = currentUserId,
-                    fechaUnion = Date()
-                )
-                db.groupMemberDao().insert(member)
-            }
-
-            Toast.makeText(requireContext(), "Grupo creado con código: $code", Toast.LENGTH_SHORT).show()
-            (parentFragment as? GroupManagementFragment)?.switchToList()
-        }
-    }
-
-    private fun joinGroup(codigo: String) {
-        if (codigo.isEmpty()) {
-            Toast.makeText(requireContext(), "Por favor ingresa el código del grupo", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (currentUserId == -1) {
-            Toast.makeText(requireContext(), "Error: Usuario no identificado", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            val group = db.groupDao().getByCode(codigo.uppercase())
-
-            if (group == null) {
-                Toast.makeText(requireContext(), "Código de grupo no encontrado", Toast.LENGTH_SHORT).show()
-                return@launch
-            }
-
-            val isMember = db.groupMemberDao().isMember(group.id, currentUserId)
-            if (isMember > 0) {
-                Toast.makeText(requireContext(), "Ya eres miembro de este grupo", Toast.LENGTH_SHORT).show()
-                return@launch
-            }
-
-            val member = GroupMember(
-                groupId = group.id,
-                userId = currentUserId,
-                fechaUnion = Date()
-            )
-            db.groupMemberDao().insert(member)
-
-            Toast.makeText(requireContext(), "Te uniste al grupo ${group.nombre}", Toast.LENGTH_SHORT).show()
-            (parentFragment as? GroupManagementFragment)?.switchToList()
         }
     }
 
