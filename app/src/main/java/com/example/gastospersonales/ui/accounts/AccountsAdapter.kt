@@ -1,6 +1,7 @@
 package com.example.gastospersonales.ui.accounts
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -26,12 +27,22 @@ class AccountsAdapter(private val onItemClick: (Account) -> Unit) :
 
         fun bind(account: Account) {
             binding.tvAccountName.text = account.name
+            
+            // Mostrar descripción y manejar visibilidad si está vacía
+            if (account.description.isNullOrBlank()) {
+                binding.tvAccountDescription.visibility = View.GONE
+            } else {
+                binding.tvAccountDescription.visibility = View.VISIBLE
+                binding.tvAccountDescription.text = account.description
+            }
+
             if (account.iconRes != 0) {
                 binding.ivAccountIcon.setImageResource(account.iconRes)
             } else {
-                // Icono por defecto si no tiene uno asignado
+                // Icono por defecto
                 binding.ivAccountIcon.setImageResource(android.R.drawable.ic_menu_agenda)
             }
+
             binding.root.setOnClickListener { onItemClick(account) }
         }
     }

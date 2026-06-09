@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AccountDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(account: Account)
 
     @Update
@@ -15,7 +15,7 @@ interface AccountDao {
     @Delete
     suspend fun delete(account: Account)
 
-    @Query("SELECT * FROM accounts WHERE userId = :userId ORDER BY name ASC")
+    @Query("SELECT * FROM accounts WHERE userId = :userId ORDER BY name DESC")
     fun getAllByUser(userId: Int): Flow<List<Account>>
 
     @Query("SELECT * FROM accounts WHERE id = :id LIMIT 1")

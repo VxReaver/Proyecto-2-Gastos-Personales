@@ -1,5 +1,6 @@
 package com.example.gastospersonales.ui.accounts
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,9 @@ class AccountDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Aplicar estilo redondeado al diálogo
+        setStyle(STYLE_NO_TITLE, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth)
+        
         arguments?.let {
             if (it.containsKey(ARG_ACCOUNT_ID)) {
                 accountId = it.getInt(ARG_ACCOUNT_ID)
@@ -36,11 +40,18 @@ class AccountDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = DialogAccountBinding.inflate(inflater, container, false)
+        // Hacer el fondo del diálogo transparente para que se vean los bordes redondeados del CardView
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        val sharedPref = requireContext().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        val userId = sharedPref.getInt("user_id", -1)
+        viewModel.setUserId(userId)
+
         setupIconSelector()
         setupButtons()
 
@@ -50,7 +61,6 @@ class AccountDialogFragment : DialogFragment() {
     }
 
     private fun setupIconSelector() {
-        // Lista de iconos disponibles en el proyecto
         val icons = listOf(
             R.drawable.ic_wallet,
             R.drawable.ic_accounts,
@@ -73,11 +83,9 @@ class AccountDialogFragment : DialogFragment() {
             val account = viewModel.getAccountById(id)
             account?.let {
                 binding.etAccountName.setText(it.name)
+                binding.etAccountDescription.setText(it.description)
                 selectedIcon = it.iconRes
-                // Refrescar selector de iconos si es necesario
-                (binding.rvIconSelector.adapter as? IconAdapter)?.let { adapter ->
-                    // Aquí se podría implementar una lógica para actualizar el item seleccionado en el adapter
-                }
+                setupIconSelector()
             }
         }
     }
@@ -87,27 +95,34 @@ class AccountDialogFragment : DialogFragment() {
         
         binding.btnSave.setOnClickListener {
             val name = binding.etAccountName.text.toString().trim()
+            val description = binding.etAccountDescription.text.toString().trim()
             
             if (name.isEmpty()) {
                 binding.tilAccountName.error = "El nombre es obligatorio"
                 return@setOnClickListener
             }
 
+            val sharedPref = requireContext().getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+            val userId = sharedPref.getInt("user_id", -1)
+
             if (accountId == null) {
-                // Agregar
                 val newAccount = Account(
                     name = name,
+                    description = description,
                     iconRes = selectedIcon,
-                    userId = 0 // Ajustar según lógica de sesión
+                    userId = userId
                 )
                 viewModel.insert(newAccount)
                 Toast.makeText(requireContext(), "Cuenta creada", Toast.LENGTH_SHORT).show()
             } else {
-                // Modificar - Para simplificar, recuperamos y actualizamos
                 lifecycleScope.launch {
                     val existing = viewModel.getAccountById(accountId!!)
                     existing?.let {
-                        val updated = it.copy(name = name, iconRes = selectedIcon)
+                        val updated = it.copy(
+                            name = name, 
+                            description = description, 
+                            iconRes = selectedIcon
+                        )
                         viewModel.update(updated)
                         Toast.makeText(requireContext(), "Cuenta actualizada", Toast.LENGTH_SHORT).show()
                     }
@@ -119,11 +134,9 @@ class AccountDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        // Ajustar ancho del diálogo
-        dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        // Forzar un tamaño mayor y centrado
+        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+        dialog?.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     override fun onDestroyView() {

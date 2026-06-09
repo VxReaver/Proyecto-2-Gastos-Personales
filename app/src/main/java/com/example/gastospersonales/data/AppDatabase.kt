@@ -31,7 +31,7 @@ import com.example.gastospersonales.data.entities.User
         SharedExpense::class, 
         Category::class
     ], 
-    version = 7, 
+    version = 8,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)

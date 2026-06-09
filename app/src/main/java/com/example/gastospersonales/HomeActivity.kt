@@ -15,7 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import com.example.gastospersonales.data.entities.Account
+import com.example.gastospersonales.ui.accounts.AccountsFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
@@ -82,12 +82,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
         val name = sharedPref.getString("user_name", "Usuario")
         val email = sharedPref.getString("user_email", "correo@ejemplo.com")
-        val avatarId = sharedPref.getInt("user_avatar", 0)
 
         tvName.text = name
         tvEmail.text = email
         
-        // Mapear el ID del avatar al recurso correspondiente
         ivAvatar.setImageResource(R.drawable.ic_person)
     }
 
@@ -107,11 +105,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(intent)
             }
             R.id.nav_accounts -> {
-              val intent = Intent(this, Account::class.java)
-                startActivity(intent)
+                replaceFragment(AccountsFragment())
             }
             R.id.nav_categories -> {
-                val intent = Intent(this, CategoryReportActivity::class.java)
+                val intent = Intent(this, CategoriesActivity::class.java)
                 startActivity(intent)
             }
             R.id.nav_shared_finances -> {
@@ -133,7 +130,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun cerrarSesion() {
         val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            clear() // Limpia toda la sesión
+            clear()
             apply()
         }
         val intent = Intent(this, MainActivity::class.java)
