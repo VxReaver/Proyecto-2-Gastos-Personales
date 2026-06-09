@@ -45,8 +45,11 @@ class CreateJoinGroupFragment : Fragment() {
         val rbCreate = view.findViewById<RadioButton>(R.id.rbCreate)
         val rbJoin = view.findViewById<RadioButton>(R.id.rbJoin)
 
+        val layoutName = view.findViewById<View>(R.id.layout_group_name)
+        val layoutDesc = view.findViewById<View>(R.id.layout_group_description)
+        val layoutCode = view.findViewById<View>(R.id.layout_group_code)
+
         val etGroupName = view.findViewById<TextInputEditText>(R.id.etGroupName)
-        val etGroupDescription = view.findViewById<TextInputEditText>(R.id.etGroupDescription)
         val etGroupCode = view.findViewById<TextInputEditText>(R.id.etGroupCode)
         val btnConfirm = view.findViewById<Button>(R.id.btnConfirmGroup)
         val btnBack = view.findViewById<Button>(R.id.btnBackToList)
@@ -59,16 +62,15 @@ class CreateJoinGroupFragment : Fragment() {
         // Obtener modo desde argumentos
         isCreating = arguments?.getBoolean("IS_CREATING", true) ?: true
 
-        // Actualizar UI según modo
-        updateUIMode(isCreating, rbCreate, rbJoin, etGroupName, etGroupDescription, etGroupCode)
+        // Actualizar UI según modo inicial
+        updateUIMode(isCreating, rbCreate, rbJoin, layoutName, layoutDesc, layoutCode)
 
         radioGroupMode.setOnCheckedChangeListener { _, checkedId ->
             isCreating = checkedId == R.id.rbCreate
-            updateUIMode(isCreating, rbCreate, rbJoin, etGroupName, etGroupDescription, etGroupCode)
+            updateUIMode(isCreating, rbCreate, rbJoin, layoutName, layoutDesc, layoutCode)
         }
 
         btnConfirm.setOnClickListener {
-            android.util.Log.d("CREATE_GROUP", "Confirm button clicked. isCreating: $isCreating")
             val userIdStr = if (currentUserId != -1) currentUserId.toString() else "guest"
             
             if (isCreating) {
@@ -77,16 +79,9 @@ class CreateJoinGroupFragment : Fragment() {
                     Toast.makeText(requireContext(), "Nombre obligatorio", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-                android.util.Log.d("CREATE_GROUP", "Calling createGroup for: $nombre")
-                try {
-                    viewModel.createGroup(nombre, userIdStr) {
-                        android.util.Log.d("CREATE_GROUP", "Group created successfully in Firestore")
-                        Toast.makeText(requireContext(), "Grupo creado con éxito", Toast.LENGTH_SHORT).show()
-                        (activity as? GroupManagementActivity)?.switchToList()
-                    }
-                } catch (e: Exception) {
-                    android.util.Log.e("CREATE_GROUP", "Error calling createGroup", e)
-                    Toast.makeText(requireContext(), "Error al crear grupo: ${e.message}", Toast.LENGTH_LONG).show()
+                viewModel.createGroup(nombre, userIdStr) {
+                    Toast.makeText(requireContext(), "Grupo creado con éxito", Toast.LENGTH_SHORT).show()
+                    (activity as? GroupManagementActivity)?.switchToList()
                 }
             } else {
                 val codigo = etGroupCode.text.toString().trim().uppercase()
@@ -94,20 +89,13 @@ class CreateJoinGroupFragment : Fragment() {
                     Toast.makeText(requireContext(), "Código obligatorio", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-                android.util.Log.d("JOIN_GROUP", "Calling joinGroup for code: $codigo")
-                try {
-                    viewModel.joinGroup(codigo, userIdStr) { success ->
-                        android.util.Log.d("JOIN_GROUP", "Join result: $success")
-                        if (success) {
-                            Toast.makeText(requireContext(), "Te uniste al grupo", Toast.LENGTH_SHORT).show()
-                            (activity as? GroupManagementActivity)?.switchToList()
-                        } else {
-                            Toast.makeText(requireContext(), "Código inválido o grupo no encontrado", Toast.LENGTH_SHORT).show()
-                        }
+                viewModel.joinGroup(codigo, userIdStr) { success ->
+                    if (success) {
+                        Toast.makeText(requireContext(), "Te uniste al grupo", Toast.LENGTH_SHORT).show()
+                        (activity as? GroupManagementActivity)?.switchToList()
+                    } else {
+                        Toast.makeText(requireContext(), "Código inválido o grupo no encontrado", Toast.LENGTH_SHORT).show()
                     }
-                } catch (e: Exception) {
-                    android.util.Log.e("JOIN_GROUP", "Error calling joinGroup", e)
-                    Toast.makeText(requireContext(), "Error al unirse: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -121,21 +109,21 @@ class CreateJoinGroupFragment : Fragment() {
         isCreating: Boolean,
         rbCreate: RadioButton,
         rbJoin: RadioButton,
-        etName: TextInputEditText,
-        etDesc: TextInputEditText,
-        etCode: TextInputEditText
+        layoutName: View,
+        layoutDesc: View,
+        layoutCode: View
     ) {
         rbCreate.isChecked = isCreating
         rbJoin.isChecked = !isCreating
 
         if (isCreating) {
-            etName.visibility = View.VISIBLE
-            etDesc.visibility = View.VISIBLE
-            etCode.visibility = View.GONE
+            layoutName.visibility = View.VISIBLE
+            layoutDesc.visibility = View.VISIBLE
+            layoutCode.visibility = View.GONE
         } else {
-            etName.visibility = View.GONE
-            etDesc.visibility = View.GONE
-            etCode.visibility = View.VISIBLE
+            layoutName.visibility = View.GONE
+            layoutDesc.visibility = View.GONE
+            layoutCode.visibility = View.VISIBLE
         }
     }
 
