@@ -15,14 +15,14 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AddMovementActivity : AppCompatActivity() {
     private var selectedDate = Date()
-    private val accounts = arrayOf("Efectivo", "Tarjeta Débito", "Tarjeta Crédito", "Ahorros")
-    private val categories = arrayOf("Comida", "Transporte", "Ropa", "Salud", "Educación", "Hogar", "Otros")
+    private var userId: Int = -1
 
     private lateinit var etAmount: TextInputEditText
     private lateinit var spinnerAccountOrigin: AutoCompleteTextView
@@ -38,6 +38,15 @@ class AddMovementActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_movement)
 
+        // Cargar usuario
+        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
+        userId = sharedPref.getInt("user_id", -1)
+        if (userId == -1) {
+            Toast.makeText(this, "Error: Inicia sesión de nuevo", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         // Inicializar vistas
         etAmount = findViewById(R.id.et_amount)
         spinnerAccountOrigin = findViewById(R.id.spinner_account_origin)
@@ -49,7 +58,7 @@ class AddMovementActivity : AppCompatActivity() {
         layoutAccountDest = findViewById(R.id.layout_account_dest)
         layoutCategory = findViewById(R.id.layout_category)
 
-        setupSpinners()
+        setupDataFromDatabase()
         setupDatePicker()
         setupToggleLogic()
 
@@ -70,13 +79,29 @@ class AddMovementActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupSpinners() {
-        val accountAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, accounts)
-        spinnerAccountOrigin.setAdapter(accountAdapter)
-        spinnerAccountDest.setAdapter(accountAdapter)
-        
-        val categoryAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, categories)
-        spinnerCategory.setAdapter(categoryAdapter)
+    private fun setupDataFromDatabase() {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(this@AddMovementActivity)
+            
+            // Cargar Cuentas Reales
+            db.accountDao().getAllByUser(userId).collect { accountList ->
+                val accountNames = accountList.map { it.name }
+                val accountAdapter = ArrayAdapter(this@AddMovementActivity, android.R.layout.simple_list_item_1, accountNames)
+                spinnerAccountOrigin.setAdapter(accountAdapter)
+                spinnerAccountDest.setAdapter(accountAdapter)
+            }
+        }
+
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(this@AddMovementActivity)
+            
+            // Cargar Categorías Reales
+            db.categoryDao().getCategoriesByUser(userId).collect { categoryList ->
+                val categoryNames = categoryList.map { it.description }
+                val categoryAdapter = ArrayAdapter(this@AddMovementActivity, android.R.layout.simple_list_item_1, categoryNames)
+                spinnerCategory.setAdapter(categoryAdapter)
+            }
+        }
     }
 
     private fun setupDatePicker() {
@@ -107,11 +132,9 @@ class AddMovementActivity : AppCompatActivity() {
             else -> "Gasto"
         }
 
-        val sharedPref = getSharedPreferences("sesion_usuario", Context.MODE_PRIVATE)
-        val userId = sharedPref.getInt("user_id", -1)
-
-        if (userId == -1) {
-            Toast.makeText(this, "Error: Usuario no identificado", Toast.LENGTH_SHORT).show()
+        val accountOrigin = spinnerAccountOrigin.text.toString()
+        if (accountOrigin.isEmpty()) {
+            Toast.makeText(this, "Selecciona una cuenta de origen", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -119,7 +142,7 @@ class AddMovementActivity : AppCompatActivity() {
             userId = userId,
             tipo = type,
             cantidad = amount,
-            cuentaOrigen = spinnerAccountOrigin.text.toString(),
+            cuentaOrigen = accountOrigin,
             cuentaDestino = if (type == "Transferencia") spinnerAccountDest.text.toString() else null,
             categoria = if (type == "Transferencia") "Transferencia" else spinnerCategory.text.toString(),
             descripcion = etDescription.text.toString(),

@@ -22,7 +22,7 @@ class CategoryDialogFragment : DialogFragment() {
     private val binding get() = _binding!!
 
     private var categoryToEdit: Category? = null
-    private var selectedIconResId: Int = R.drawable.ic_categories // Default icon
+    private var selectedIconResId: Int = R.drawable.ic_categories
 
     private val icons = listOf(
         R.drawable.ic_wallet,
@@ -55,6 +55,7 @@ class CategoryDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth)
         categoryToEdit = arguments?.getParcelable(ARG_CATEGORY)
         categoryToEdit?.let {
             selectedIconResId = it.iconResource
@@ -67,6 +68,7 @@ class CategoryDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = DialogCategoryBinding.inflate(inflater, container, false)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         return binding.root
     }
 
@@ -101,7 +103,7 @@ class CategoryDialogFragment : DialogFragment() {
         val description = binding.etCategoryDescription.text.toString().trim()
 
         if (description.isEmpty()) {
-            binding.tilCategoryDescription.error = "La descripción no puede estar vacía"
+            binding.tilCategoryDescription.error = "La descripción es obligatoria"
             return
         }
 
@@ -118,16 +120,14 @@ class CategoryDialogFragment : DialogFragment() {
             val categoryDao = db.categoryDao()
 
             if (categoryToEdit == null) {
-                // Modo Agregar
                 val newCategory = Category(
                     userId = userId,
                     description = description,
                     iconResource = selectedIconResId
                 )
                 categoryDao.insert(newCategory)
-                Toast.makeText(requireContext(), "Categoría guardada", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Categoría creada", Toast.LENGTH_SHORT).show()
             } else {
-                // Modo Modificar
                 val updatedCategory = categoryToEdit!!.copy(
                     description = description,
                     iconResource = selectedIconResId
@@ -139,12 +139,17 @@ class CategoryDialogFragment : DialogFragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+        dialog?.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    // Inner class Adapter for Icon Selection
     private inner class IconAdapter(
         private val iconList: List<Int>,
         private var selectedResId: Int,
@@ -162,11 +167,10 @@ class CategoryDialogFragment : DialogFragment() {
             val iconRes = iconList[position]
             holder.binding.ivIcon.setImageResource(iconRes)
 
-            // Visual feedback for selection
             if (iconRes == selectedResId) {
-                holder.binding.ivIcon.setBackgroundResource(R.drawable.avatar_selected_bg)
+                holder.binding.ivSelected.visibility = View.VISIBLE
             } else {
-                holder.binding.ivIcon.setBackgroundResource(0)
+                holder.binding.ivSelected.visibility = View.GONE
             }
 
             holder.itemView.setOnClickListener {
@@ -174,7 +178,6 @@ class CategoryDialogFragment : DialogFragment() {
                 selectedResId = iconRes
                 onIconSelected(iconRes)
                 
-                // Refresh items to update background
                 val prevIndex = iconList.indexOf(previousSelected)
                 if (prevIndex != -1) notifyItemChanged(prevIndex)
                 notifyItemChanged(position)

@@ -18,6 +18,11 @@
             android:label="Acerca de" />
 
         <activity
+            android:name=".CategoriesActivity"
+            android:exported="false"
+            android:label="Categorías" />
+
+        <activity
             android:name=".EditMovementActivity"
             android:exported="false"
             android:label="Modificar Movimiento" />
