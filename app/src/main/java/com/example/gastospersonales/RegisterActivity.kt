@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.gastospersonales.data.AppDatabase
 import com.example.gastospersonales.data.entities.User
+import com.example.gastospersonales.utils.FirebaseSyncHelper
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
@@ -106,7 +107,12 @@ class RegisterActivity : AppCompatActivity() {
             )
 
             try {
-                db.userDao().insert(newUser)
+                val id = db.userDao().insert(newUser)
+                val userWithId = newUser.copy(id = id.toInt())
+                
+                // Sincronizar con Firebase
+                FirebaseSyncHelper.syncUser(userWithId)
+                
                 Toast.makeText(this@RegisterActivity, "¡Cuenta creada con éxito!", Toast.LENGTH_SHORT).show()
                 finish() // Regresar al Login
             } catch (e: Exception) {

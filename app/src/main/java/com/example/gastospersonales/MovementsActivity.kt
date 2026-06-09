@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gastospersonales.data.AppDatabase
 import com.example.gastospersonales.data.entities.Movement
 import com.example.gastospersonales.databinding.ActivityMovementsBinding
+import com.example.gastospersonales.utils.FirebaseSyncHelper
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -87,10 +87,15 @@ class MovementsActivity : AppCompatActivity() {
             val db = AppDatabase.getDatabase(this@MovementsActivity)
             db.movementDao().delete(movement)
             
+            // Sincronizar eliminación con Firebase
+            FirebaseSyncHelper.deleteMovement(movement)
+            
             Snackbar.make(binding.root, "Movimiento eliminado", Snackbar.LENGTH_LONG)
                 .setAction("Deshacer") {
                     lifecycleScope.launch {
                         db.movementDao().insert(movement)
+                        // Sincronizar re-inserción con Firebase
+                        FirebaseSyncHelper.syncMovement(movement)
                     }
                 }.show()
         }
@@ -133,7 +138,7 @@ class MovementsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             AppDatabase.getDatabase(this@MovementsActivity)
                 .movementDao()
-                .getAll(userId) // Se añadió el userId
+                .getAll(userId)
                 .collect { movements ->
                     allMovementsList = movements
                     updateList()

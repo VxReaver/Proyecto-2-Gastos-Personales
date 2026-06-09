@@ -8,7 +8,7 @@ import com.example.gastospersonales.data.entities.User
 @Dao
 interface UserDao {
     @Insert
-    suspend fun insert(user: User)
+    suspend fun insert(user: User): Long
 
     @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
     suspend fun login(email: String, password: String): User?

@@ -2,6 +2,7 @@ package com.example.gastospersonales.data.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.Date
 
@@ -10,6 +11,10 @@ import java.util.Date
     foreignKeys = [
         ForeignKey(entity = Group::class, parentColumns = ["id"], childColumns = ["groupId"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["usuarioPagador"], onDelete = ForeignKey.CASCADE)
+    ],
+    indices = [
+        Index(value = ["groupId"]),
+        Index(value = ["usuarioPagador"])
     ]
 )
 data class SharedExpense(

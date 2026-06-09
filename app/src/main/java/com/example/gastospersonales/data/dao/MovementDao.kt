@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MovementDao {
     @Insert
-    suspend fun insert(movement: Movement)
+    suspend fun insert(movement: Movement): Long
 
     @Update
     suspend fun update(movement: Movement)

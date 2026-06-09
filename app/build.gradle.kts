@@ -3,14 +3,17 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     id("kotlin-parcelize")
+    alias(libs.plugins.google.services)
 }
 
 android {
+    // El namespace se mantiene para no romper tus clases actuales
     namespace = "com.example.gastospersonales"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.gastospersonales"
+        // ACTUALIZADO: Debe coincidir exactamente con el google-services.json
+        applicationId = "com.proyecto.gastos" 
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -32,9 +35,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
+
     buildFeatures {
         viewBinding = true
     }
@@ -58,6 +65,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

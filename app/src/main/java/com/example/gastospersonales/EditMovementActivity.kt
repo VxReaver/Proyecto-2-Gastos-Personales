@@ -1,6 +1,5 @@
 package com.example.gastospersonales
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -10,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.gastospersonales.data.AppDatabase
 import com.example.gastospersonales.data.entities.Movement
 import com.example.gastospersonales.databinding.ActivityAddMovementBinding
+import com.example.gastospersonales.utils.FirebaseSyncHelper
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -49,7 +49,6 @@ class EditMovementActivity : AppCompatActivity() {
                 binding.spinnerAccountOrigin.setText(mov.cuentaOrigen, false)
                 binding.spinnerCategory.setText(mov.categoria, false)
                 
-                // Si el error persiste en el IDE, intenta Build > Rebuild Project
                 binding.etDescription.setText(mov.descripcion)
                 
                 val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -137,6 +136,9 @@ class EditMovementActivity : AppCompatActivity() {
         updatedMovement?.let {
             lifecycleScope.launch {
                 AppDatabase.getDatabase(this@EditMovementActivity).movementDao().update(it)
+                // Sincronizar actualización con Firebase
+                FirebaseSyncHelper.syncMovement(it)
+
                 Toast.makeText(this@EditMovementActivity, "Actualizado con éxito", Toast.LENGTH_SHORT).show()
                 finish()
             }

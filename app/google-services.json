@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "173684459609",
+    "project_id": "gastospersonales-61d09",
+    "storage_bucket": "gastospersonales-61d09.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173684459609:android:836c66e7c08f673b61c948",
+        "android_client_info": {
+          "package_name": "com.proyecto.gastos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByFnbpy6EGpRXkzxlP0m1VJlyj4UXvf_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
